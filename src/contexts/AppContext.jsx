@@ -129,6 +129,26 @@ export function AppProvider({ children }) {
     if (initialFetchDone.current) return;
     initialFetchDone.current = true;
     setSyncStatus('loading');
+    const initialPayload = {
+      userName: stored.userName,
+      theme: stored.theme,
+      userStats: { xp: stored.userStats.xp, level: stored.userStats.level },
+      leftLayout: stored.leftLayout,
+      rightLayout: stored.rightLayout,
+      habits: stored.habits,
+      tasks: stored.tasks,
+      taskLogs: stored.taskLogs,
+      goals: stored.goals,
+      lessons: stored.lessons,
+      lessonTemplates: stored.lessonTemplates,
+      students: stored.students,
+      expenses: stored.expenses,
+      waterLogs: stored.waterLogs,
+      coffeeLogs: stored.coffeeLogs,
+      workoutLogs: stored.workoutLogs,
+      recipes: stored.recipes,
+      mealLogs: stored.mealLogs,
+    };
     fetchSync()
       .then((data) => {
         if (data.user) {
@@ -139,7 +159,7 @@ export function AppProvider({ children }) {
           if (data.user.leftLayout?.length) setLeftLayout(data.user.leftLayout);
           if (data.user.rightLayout?.length) setRightLayout(data.user.rightLayout);
         }
-        if (Array.isArray(data.habits) && data.habits.length > 0) setHabits(data.habits);
+        if (Array.isArray(data.habits)) setHabits(data.habits);
         if (Array.isArray(data.tasks)) setTasks(data.tasks);
         if (Array.isArray(data.taskLogs)) setTaskLogs(data.taskLogs);
         if (Array.isArray(data.goals)) setGoals(data.goals);
@@ -154,10 +174,18 @@ export function AppProvider({ children }) {
         if (Array.isArray(data.mealLogs)) setMealLogs(data.mealLogs);
         setSyncStatus('synced');
         setSyncError(null);
+        const serverHadData = (data.habits?.length || data.tasks?.length || data.lessons?.length || data.lessonTemplates?.length || data.students?.length) > 0;
+        if (!serverHadData && (initialPayload.habits?.length || initialPayload.tasks?.length || initialPayload.lessons?.length || initialPayload.lessonTemplates?.length || initialPayload.students?.length)) {
+          pushSync(initialPayload).then(() => setSyncStatus('synced')).catch((e) => { setSyncStatus('error'); setSyncError(e.message); });
+        }
       })
       .catch((err) => {
         setSyncStatus('error');
         setSyncError(err.message);
+        const hasLocalData = initialPayload.habits?.length || initialPayload.tasks?.length || initialPayload.lessons?.length || initialPayload.lessonTemplates?.length || initialPayload.students?.length;
+        if (hasLocalData) {
+          pushSync(initialPayload).then(() => { setSyncStatus('synced'); setSyncError(null); }).catch(() => {});
+        }
       });
   }, []);
 
@@ -259,6 +287,40 @@ export function AppProvider({ children }) {
     }
   }, []);
 
+  const refetchFromServer = useCallback(() => {
+    setSyncStatus('loading');
+    fetchSync()
+      .then((data) => {
+        if (data.user) {
+          if (data.user.userName) setUserName(data.user.userName);
+          if (data.user.theme) setTheme(data.user.theme);
+          if (data.user.xp != null) setUserStats((prev) => ({ ...prev, xp: data.user.xp }));
+          if (data.user.level != null) setUserStats((prev) => ({ ...prev, level: data.user.level }));
+          if (data.user.leftLayout?.length) setLeftLayout(data.user.leftLayout);
+          if (data.user.rightLayout?.length) setRightLayout(data.user.rightLayout);
+        }
+        if (Array.isArray(data.habits)) setHabits(data.habits);
+        if (Array.isArray(data.tasks)) setTasks(data.tasks);
+        if (Array.isArray(data.taskLogs)) setTaskLogs(data.taskLogs);
+        if (Array.isArray(data.goals)) setGoals(data.goals);
+        if (Array.isArray(data.lessons)) setLessons(data.lessons);
+        if (Array.isArray(data.lessonTemplates)) setLessonTemplates(data.lessonTemplates);
+        if (Array.isArray(data.students)) setStudents(data.students);
+        if (Array.isArray(data.expenses)) setExpenses(data.expenses);
+        if (data.waterLogs && typeof data.waterLogs === 'object') setWaterLogs(data.waterLogs);
+        if (data.coffeeLogs && typeof data.coffeeLogs === 'object') setCoffeeLogs(data.coffeeLogs);
+        if (Array.isArray(data.workoutLogs)) setWorkoutLogs(data.workoutLogs);
+        if (Array.isArray(data.recipes)) setRecipes(data.recipes);
+        if (Array.isArray(data.mealLogs)) setMealLogs(data.mealLogs);
+        setSyncStatus('synced');
+        setSyncError(null);
+      })
+      .catch((err) => {
+        setSyncStatus('error');
+        setSyncError(err.message);
+      });
+  }, []);
+
   const value = {
     theme,
     setTheme,
@@ -306,6 +368,7 @@ export function AppProvider({ children }) {
     syncError,
     deviceId: getDeviceId(),
     setDeviceId,
+    refetchFromServer,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

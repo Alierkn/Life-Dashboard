@@ -75,6 +75,7 @@ function AppContent() {
     syncError,
     deviceId,
     setDeviceId,
+    refetchFromServer,
   } = useApp();
 
   const [isEditLayoutMode, setIsEditLayoutMode] = useState(false);
@@ -680,6 +681,7 @@ function AppContent() {
             syncError={syncError}
             deviceId={deviceId}
             setDeviceId={setDeviceId}
+            refetchFromServer={refetchFromServer}
           />
         </Suspense>
       )}

@@ -18,6 +18,7 @@ export default function ProfileLayout({
   syncError,
   deviceId,
   setDeviceId,
+  refetchFromServer,
 }) {
   const [deviceIdInput, setDeviceIdInput] = useState('');
   const currentLevelXp = userStats.xp % 1000;
@@ -121,6 +122,12 @@ export default function ProfileLayout({
                 </button>
               </div>
               <p className="text-[10px] text-slate-400">Bu kodu diğer cihazda yapıştırın</p>
+              <button
+                onClick={() => refetchFromServer?.()}
+                className="flex items-center gap-2 px-3 py-2 rounded-lg border-2 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 text-xs font-bold touch-manipulation"
+              >
+                <RefreshCw className="w-4 h-4" /> Sunucudan Yükle
+              </button>
               <div className="flex gap-2">
                 <input
                   type="text"
