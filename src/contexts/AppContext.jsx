@@ -124,6 +124,31 @@ export function AppProvider({ children }) {
   const pushTimeoutRef = useRef(null);
   const initialFetchDone = useRef(false);
 
+  // Sunucudan gelen veriyi state'e uygula (tekrar kullanım için)
+  const applyServerData = useCallback((data) => {
+    if (data.user) {
+      if (data.user.userName) setUserName(data.user.userName);
+      if (data.user.theme) setTheme(data.user.theme);
+      if (data.user.xp != null) setUserStats((prev) => ({ ...prev, xp: data.user.xp }));
+      if (data.user.level != null) setUserStats((prev) => ({ ...prev, level: data.user.level }));
+      if (data.user.leftLayout?.length) setLeftLayout(data.user.leftLayout);
+      if (data.user.rightLayout?.length) setRightLayout(data.user.rightLayout);
+    }
+    if (Array.isArray(data.habits)) setHabits(data.habits);
+    if (Array.isArray(data.tasks)) setTasks(data.tasks);
+    if (Array.isArray(data.taskLogs)) setTaskLogs(data.taskLogs);
+    if (Array.isArray(data.goals)) setGoals(data.goals);
+    if (Array.isArray(data.lessons)) setLessons(data.lessons);
+    if (Array.isArray(data.lessonTemplates)) setLessonTemplates(data.lessonTemplates);
+    if (Array.isArray(data.students)) setStudents(data.students);
+    if (Array.isArray(data.expenses)) setExpenses(data.expenses);
+    if (data.waterLogs && typeof data.waterLogs === 'object') setWaterLogs(data.waterLogs);
+    if (data.coffeeLogs && typeof data.coffeeLogs === 'object') setCoffeeLogs(data.coffeeLogs);
+    if (Array.isArray(data.workoutLogs)) setWorkoutLogs(data.workoutLogs);
+    if (Array.isArray(data.recipes)) setRecipes(data.recipes);
+    if (Array.isArray(data.mealLogs)) setMealLogs(data.mealLogs);
+  }, []);
+
   // Fetch from Neon on mount
   useEffect(() => {
     if (initialFetchDone.current) return;
@@ -151,27 +176,7 @@ export function AppProvider({ children }) {
     };
     fetchSync()
       .then((data) => {
-        if (data.user) {
-          if (data.user.userName) setUserName(data.user.userName);
-          if (data.user.theme) setTheme(data.user.theme);
-          if (data.user.xp != null) setUserStats((prev) => ({ ...prev, xp: data.user.xp }));
-          if (data.user.level != null) setUserStats((prev) => ({ ...prev, level: data.user.level }));
-          if (data.user.leftLayout?.length) setLeftLayout(data.user.leftLayout);
-          if (data.user.rightLayout?.length) setRightLayout(data.user.rightLayout);
-        }
-        if (Array.isArray(data.habits)) setHabits(data.habits);
-        if (Array.isArray(data.tasks)) setTasks(data.tasks);
-        if (Array.isArray(data.taskLogs)) setTaskLogs(data.taskLogs);
-        if (Array.isArray(data.goals)) setGoals(data.goals);
-        if (Array.isArray(data.lessons)) setLessons(data.lessons);
-        if (Array.isArray(data.lessonTemplates)) setLessonTemplates(data.lessonTemplates);
-        if (Array.isArray(data.students)) setStudents(data.students);
-        if (Array.isArray(data.expenses)) setExpenses(data.expenses);
-        if (data.waterLogs && typeof data.waterLogs === 'object') setWaterLogs(data.waterLogs);
-        if (data.coffeeLogs && typeof data.coffeeLogs === 'object') setCoffeeLogs(data.coffeeLogs);
-        if (Array.isArray(data.workoutLogs)) setWorkoutLogs(data.workoutLogs);
-        if (Array.isArray(data.recipes)) setRecipes(data.recipes);
-        if (Array.isArray(data.mealLogs)) setMealLogs(data.mealLogs);
+        applyServerData(data);
         setSyncStatus('synced');
         setSyncError(null);
         const serverHadData = (data.habits?.length || data.tasks?.length || data.lessons?.length || data.lessonTemplates?.length || data.students?.length) > 0;
@@ -188,6 +193,36 @@ export function AppProvider({ children }) {
         }
       });
   }, []);
+
+  // Canlı senkronizasyon: periyodik polling + sekme görünür olduğunda hemen fetch
+  const POLL_INTERVAL_MS = 5_000; // 5 saniye - cihazlar arası anlık senkron
+  useEffect(() => {
+    if (!initialFetchDone.current) return;
+
+    const doFetch = () => {
+      fetchSync()
+        .then((data) => {
+          applyServerData(data);
+          setSyncStatus((s) => (s === 'loading' ? s : 'synced'));
+          setSyncError(null);
+        })
+        .catch(() => { /* sessizce devam et, syncStatus değiştirme */ });
+    };
+
+    const onVisibilityChange = () => {
+      if (document.visibilityState === 'visible') doFetch();
+    };
+
+    document.addEventListener('visibilitychange', onVisibilityChange);
+    const interval = setInterval(() => {
+      if (document.visibilityState === 'visible') doFetch();
+    }, POLL_INTERVAL_MS);
+
+    return () => {
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+      clearInterval(interval);
+    };
+  }, [applyServerData]);
 
   // Build sync payload
   const getSyncPayload = useCallback(() => ({
@@ -291,27 +326,7 @@ export function AppProvider({ children }) {
     setSyncStatus('loading');
     fetchSync()
       .then((data) => {
-        if (data.user) {
-          if (data.user.userName) setUserName(data.user.userName);
-          if (data.user.theme) setTheme(data.user.theme);
-          if (data.user.xp != null) setUserStats((prev) => ({ ...prev, xp: data.user.xp }));
-          if (data.user.level != null) setUserStats((prev) => ({ ...prev, level: data.user.level }));
-          if (data.user.leftLayout?.length) setLeftLayout(data.user.leftLayout);
-          if (data.user.rightLayout?.length) setRightLayout(data.user.rightLayout);
-        }
-        if (Array.isArray(data.habits)) setHabits(data.habits);
-        if (Array.isArray(data.tasks)) setTasks(data.tasks);
-        if (Array.isArray(data.taskLogs)) setTaskLogs(data.taskLogs);
-        if (Array.isArray(data.goals)) setGoals(data.goals);
-        if (Array.isArray(data.lessons)) setLessons(data.lessons);
-        if (Array.isArray(data.lessonTemplates)) setLessonTemplates(data.lessonTemplates);
-        if (Array.isArray(data.students)) setStudents(data.students);
-        if (Array.isArray(data.expenses)) setExpenses(data.expenses);
-        if (data.waterLogs && typeof data.waterLogs === 'object') setWaterLogs(data.waterLogs);
-        if (data.coffeeLogs && typeof data.coffeeLogs === 'object') setCoffeeLogs(data.coffeeLogs);
-        if (Array.isArray(data.workoutLogs)) setWorkoutLogs(data.workoutLogs);
-        if (Array.isArray(data.recipes)) setRecipes(data.recipes);
-        if (Array.isArray(data.mealLogs)) setMealLogs(data.mealLogs);
+        applyServerData(data);
         setSyncStatus('synced');
         setSyncError(null);
       })
@@ -319,7 +334,7 @@ export function AppProvider({ children }) {
         setSyncStatus('error');
         setSyncError(err.message);
       });
-  }, []);
+  }, [applyServerData]);
 
   const value = {
     theme,
