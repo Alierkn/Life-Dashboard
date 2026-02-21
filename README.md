@@ -1,127 +1,177 @@
-# Life Dashboard
+<div align="center">
 
-**Görevler, alışkanlıklar, dersler, yemek ve spor takibi için kişisel yaşam yönetim paneli.**
+# 🗂️ Life Dashboard
 
-![React](https://img.shields.io/badge/React-19-61dafb?logo=react)
-![Vite](https://img.shields.io/badge/Vite-7-646cff?logo=vite)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind-3-38bdf8?logo=tailwindcss)
-![PWA](https://img.shields.io/badge/PWA-Ready-5a0fc8)
+**Personal life management dashboard for tasks, habits, lessons, meals, and fitness tracking.**
 
----
+[![React](https://img.shields.io/badge/React-19-61dafb?logo=react&logoColor=white)](https://react.dev/)
+[![Vite](https://img.shields.io/badge/Vite-7-646cff?logo=vite&logoColor=white)](https://vitejs.dev/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3-38bdf8?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![PWA](https://img.shields.io/badge/PWA-Ready-5a0fc8?logo=pwa&logoColor=white)](https://web.dev/progressive-web-apps/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-## Özellikler
+[Features](#-features) · [Tech Stack](#-tech-stack) · [Getting Started](#-getting-started) · [Project Structure](#-project-structure) · [Roadmap](#-roadmap) · [Contributing](#-contributing)
 
-### Görevler & Alışkanlıklar
-- Alt görevler (checklist)
-- Tekrarlayan görevler (günlük/haftalık)
-- Etiket filtreleme ve sıralama
-- Alışkanlık hedefleri (örn. haftada 5 gün)
-- Streak istatistikleri (en uzun seri, ortalama seri)
-- Tamamlama oranı ve en iyi günler analizi
-
-### Özel Dersler
-- Ders takvimi ve planlama
-- Tekrarlayan ders şablonları
-- Öğrenci profilleri (notlar, iletişim, veli bilgileri)
-- Gelir/gider takibi
-- Aylık fatura ve Excel/PDF rapor
-
-### Yemek & Tarifler
-- Tarif kaydetme (malzemeler, yapılış, süre, porsiyon)
-- Yemek günlüğü (kahvaltı, öğle, akşam, ara öğün)
-- Tariften hızlı yemek ekleme
-
-### Spor & Sağlık
-- Antrenman takibi (koşu, yüzme, fitness, yoga vb.)
-- Su ve kahve tüketim takibi
-- Haftalık su grafiği
-
-### İstatistikler & Raporlar
-- Dashboard özet kartları
-- Etiketlere göre görev dağılımı
-- Bu ay vs geçen ay karşılaştırma
-- Haftalık/aylık PDF rapor
-
-### Diğer
-- PWA desteği — ana ekrana eklenebilir, offline çalışır
-- Mobil uyumlu, çentikli ekran desteği
-- Koyu/açık tema
-- Veri yedekleme ve geri yükleme (JSON)
+</div>
 
 ---
 
-## Teknolojiler
+## 📸 Overview
 
-- **React 19** + **Vite 7**
-- **Tailwind CSS**
-- **Lucide React** (ikonlar)
-- **xlsx** (Excel export)
-- **vite-plugin-pwa** (Progressive Web App)
+Life Dashboard is a fully client-side personal productivity app that helps you manage every aspect of your daily life — all within a single, beautiful interface. Data stays on your device via `localStorage`, so no account or server is required.
 
 ---
 
-## Kurulum
+## ✨ Features
+
+### ✅ Tasks & Habits
+- Sub-tasks (checklist support)
+- Recurring tasks (daily / weekly)
+- Tag filtering & sorting
+- Habit goals (e.g., 5 days per week)
+- Streak statistics (longest streak, average streak)
+- Completion rate & best-day analysis
+
+### 📚 Private Lessons
+- Lesson calendar & planning
+- Recurring lesson templates
+- Student profiles (notes, contact info, parent details)
+- Income / expense tracking
+- Monthly billing & Excel / PDF reports
+
+### 🍽️ Meals & Recipes
+- Save recipes (ingredients, steps, duration, servings)
+- Meal diary (breakfast, lunch, dinner, snacks)
+- Quick meal entry directly from saved recipes
+
+### 🏋️ Fitness & Health
+- Workout tracking (running, swimming, fitness, yoga, etc.)
+- Water & coffee intake tracking
+- Weekly hydration chart
+
+### 📊 Statistics & Reports
+- Dashboard summary cards
+- Task distribution by tag
+- Current month vs. previous month comparison
+- Weekly / monthly PDF reports
+
+### ⚙️ General
+- PWA support — installable on home screen, works offline
+- Mobile-friendly with notch screen support
+- Dark / light theme
+- Data backup & restore (JSON export/import)
+
+---
+
+## 🛠️ Tech Stack
+
+| Category | Technology |
+|---|---|
+| Framework | React 19 + Vite 7 |
+| Styling | Tailwind CSS 3 |
+| Icons | Lucide React |
+| Excel Export | xlsx |
+| PWA | vite-plugin-pwa |
+| State | React Context + localStorage |
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js ≥ 18
+- npm ≥ 9
+
+### Installation
 
 ```bash
-# Depoyu klonla
-git clone https://github.com/KULLANICI_ADINIZ/life-dashboard.git
+# Clone the repository
+git clone https://github.com/Alierkn/life-dashboard.git
 cd life-dashboard
 
-# Bağımlılıkları yükle
+# Install dependencies
 npm install
 
-# Geliştirme sunucusunu başlat
+# Start the development server
 npm run dev
 ```
 
-Tarayıcıda `http://localhost:5173` adresini açın.
+Open [http://localhost:5173](http://localhost:5173) in your browser.
 
----
-
-## Build & Deploy
+### Build & Preview
 
 ```bash
 # Production build
 npm run build
 
-# Build önizleme
+# Preview the build locally
 npm run preview
 ```
 
-**Vercel / Netlify:** Repoyu bağlayıp otomatik deploy edebilirsiniz. Detaylar için [DEPLOY.md](./DEPLOY.md) dosyasına bakın.
+### Deployment
+
+You can deploy to **Vercel** or **Netlify** by connecting the repository for automatic deployments. See [DEPLOY.md](DEPLOY.md) for detailed instructions.
 
 ---
 
-## Proje Yapısı
+## 📁 Project Structure
 
 ```
 life-dashboard/
-├── src/
-│   ├── components/     # UI bileşenleri
-│   │   ├── layout/     # Layout, sayfa yapıları
-│   │   └── widgets/    # Dashboard widget'ları
-│   ├── contexts/       # React Context (global state)
-│   ├── hooks/          # Custom hooks
-│   ├── utils/          # Yardımcı fonksiyonlar
-│   └── constants/      # Sabitler
 ├── public/
-└── dist/               # Build çıktısı
+├── src/
+│   ├── components/
+│   │   ├── layout/        # Page layouts
+│   │   └── widgets/       # Dashboard widgets
+│   ├── contexts/          # React Context (global state)
+│   ├── hooks/             # Custom hooks
+│   ├── utils/             # Helper functions
+│   └── constants/         # App-wide constants
+├── index.html
+└── dist/                  # Production build output
 ```
 
 ---
 
-## Veri & Gizlilik
+## 🔒 Data & Privacy
 
-Tüm veriler **localStorage**'da tutulur. Sunucuya veri gönderilmez. Yedek almak için Profil sayfasındaki "Yedekle" butonunu kullanabilirsiniz.
+All data is stored locally in your browser's `localStorage`. **No data is ever sent to any server.**
 
----
-
-## Lisans
-
-MIT License — İstediğiniz gibi kullanabilir, değiştirebilir ve paylaşabilirsiniz.
+To back up your data, use the **"Backup"** button on the Profile page to export a JSON file, which can later be re-imported.
 
 ---
 
-## Katkıda Bulunma
+## 🗺️ Roadmap
 
-Pull request'ler memnuniyetle karşılanır. Büyük değişiklikler için önce bir issue açarak tartışmayı öneririz.
+See [DEVELOPMENT_PLAN.md](DEVELOPMENT_PLAN.md) for the full roadmap. Highlights:
+
+- [ ] **Phase 1** — Code quality improvements & bug fixes
+- [ ] **Phase 2** — Modular architecture (component split, custom hooks)
+- [ ] **Phase 3** — New features (reminders, goal tracking, AI tips)
+- [ ] **Phase 4** — Accessibility (a11y), performance & testing
+- [ ] **Phase 5** — Backend sync (Supabase), multi-device support
+
+---
+
+## 🤝 Contributing
+
+Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change.
+
+1. Fork the repository
+2. Create your feature branch: `git checkout -b feature/your-feature`
+3. Commit your changes: `git commit -m 'feat: add your feature'`
+4. Push to the branch: `git push origin feature/your-feature`
+5. Open a pull request
+
+---
+
+## 📄 License
+
+Distributed under the **MIT License**. See [LICENSE](LICENSE) for more information.
+
+---
+
+<div align="center">
+Made with ❤️ by <a href="https://github.com/Alierkn">Alierkn</a>
+</div>
