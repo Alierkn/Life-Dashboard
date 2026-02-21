@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Mobil: yatay taşmayı önle */
+html, body {
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
 /* Mobil safe-area (çentikli ekranlar) */
 @supports (padding: env(safe-area-inset-bottom)) {
   .safe-area-pb {
@@ -9,6 +15,24 @@
   }
   .safe-area-inset-bottom {
     padding-bottom: env(safe-area-inset-bottom);
+  }
+  .safe-area-inset-top {
+    padding-top: env(safe-area-inset-top);
+  }
+}
+
+/* Mobil: dokunma hedefleri ve tepki */
+@media (max-width: 768px) {
+  .touch-target {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
+/* Mobil dokunma geri bildirimi */
+@media (hover: none) {
+  button:active, [role="button"]:active {
+    opacity: 0.8;
   }
 }
 

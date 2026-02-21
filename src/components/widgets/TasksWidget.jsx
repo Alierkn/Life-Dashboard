@@ -72,7 +72,7 @@ export default function TasksWidget({
   };
 
   return (
-    <div className="bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-[2rem] p-6 h-fit transition-colors">
+    <div className="bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-[2rem] p-4 md:p-6 h-fit transition-colors overflow-hidden">
       <div className="flex flex-wrap justify-between items-center gap-3 mb-6">
         <h3 className="font-black text-xl text-slate-900 dark:text-white flex items-center gap-2">
           <BookOpen className="w-6 h-6 text-blue-500" /> Görevler

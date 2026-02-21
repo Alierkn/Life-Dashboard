@@ -77,7 +77,7 @@ export default function ProfileLayout({
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-[2rem] p-6 flex flex-col gap-4">
+        <div className="bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-[2rem] p-4 md:p-6 flex flex-col gap-4">
           <div>
             <h3 className="font-black text-lg text-slate-900 dark:text-white flex items-center gap-2">
               <Settings className="w-5 h-5 text-slate-500" /> Veri Yönetimi
@@ -116,7 +116,7 @@ export default function ProfileLayout({
       </div>
 
       <div className="md:col-span-8 flex flex-col gap-6 md:gap-8">
-        <div className="bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-[2rem] p-6">
+        <div className="bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-[2rem] p-4 md:p-6">
           <h3 className="font-black text-xl text-slate-900 dark:text-white flex items-center gap-2 mb-6">
             <TrendingUp className="w-6 h-6 text-green-500" /> Genel Bakış
           </h3>

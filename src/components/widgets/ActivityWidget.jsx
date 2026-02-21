@@ -2,7 +2,7 @@ import { Activity } from 'lucide-react';
 
 export default function ActivityWidget({ activityTab, onTabChange, contributionData }) {
   return (
-    <div className="bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-[2rem] p-6 flex flex-col justify-center transition-colors">
+    <div className="bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-[2rem] p-4 md:p-6 flex flex-col justify-center transition-colors overflow-hidden">
       <div className="flex flex-col gap-4 mb-6">
         <h3 className="font-black text-lg text-slate-900 dark:text-white flex items-center gap-2">
           <Activity className={`w-5 h-5 ${activityTab === 'habits' ? 'text-green-500' : 'text-blue-500'}`} /> Aktivite

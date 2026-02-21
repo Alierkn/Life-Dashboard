@@ -12,12 +12,12 @@ export default function Header({
   onToggleMobileMenu,
 }) {
   return (
-    <div className="max-w-5xl mx-auto mb-10 sticky top-4 z-[60]">
-      <div className="bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 rounded-full px-4 py-3 flex justify-between items-center shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] dark:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-colors">
+    <div className="max-w-5xl mx-auto mb-6 md:mb-10 sticky top-0 z-[60] safe-area-inset-top">
+      <div className="bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 rounded-full px-3 md:px-4 py-2.5 md:py-3 flex justify-between items-center gap-2 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] dark:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-colors">
         <div className="flex items-center gap-3 pl-2">
           <button
             onClick={onToggleMobileMenu}
-            className="md:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            className="md:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors touch-target"
             aria-label="Menüyü aç"
           >
             <Layout className="w-5 h-5 text-slate-700 dark:text-slate-300" />
@@ -45,7 +45,7 @@ export default function Header({
 
           <button
             onClick={onToggleTheme}
-            className="p-2 rounded-full border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:border-purple-300 transition-colors"
+            className="p-2 rounded-full border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:border-purple-300 transition-colors touch-target"
             aria-label={theme === 'dark' ? 'Açık moda geç' : 'Koyu moda geç'}
           >
             {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}

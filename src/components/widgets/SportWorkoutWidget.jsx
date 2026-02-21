@@ -39,7 +39,7 @@ export default function SportWorkoutWidget({ workoutLogs, setWorkoutLogs }) {
   };
 
   return (
-    <div className="bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-[2rem] p-6 transition-colors">
+    <div className="bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-[2rem] p-4 md:p-6 transition-colors overflow-hidden">
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center gap-3">
           <div className="bg-emerald-100 dark:bg-emerald-900/30 p-2 rounded-xl border-2 border-emerald-200 dark:border-emerald-800">

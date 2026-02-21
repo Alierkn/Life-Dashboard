@@ -45,7 +45,7 @@ export default function DrinkTrackerWidget({
   const waterProgress = Math.min(100, (waterToday / DEFAULT_WATER_GOAL_GLASSES) * 100);
 
   return (
-    <div className="bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-[2rem] p-6 transition-colors">
+    <div className="bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-[2rem] p-4 md:p-6 transition-colors overflow-hidden">
       <div className="flex items-center gap-3 mb-6">
         <div className="bg-cyan-100 dark:bg-cyan-900/30 p-2 rounded-xl border-2 border-cyan-200 dark:border-cyan-800">
           <Droplets className="w-6 h-6 text-cyan-600 dark:text-cyan-400" />

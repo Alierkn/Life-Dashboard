@@ -79,7 +79,7 @@ export default function StatsWidget({
   };
 
   return (
-    <div className="bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-[2rem] p-6 transition-colors">
+    <div className="bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-[2rem] p-4 md:p-6 transition-colors overflow-hidden">
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center gap-3">
           <div className="bg-purple-100 dark:bg-purple-900/30 p-2 rounded-xl border-2 border-purple-200 dark:border-purple-800">

@@ -622,7 +622,7 @@ function AppContent() {
   };
 
   return (
-    <div className="min-h-screen bg-[#fffdf7] dark:bg-slate-950 text-slate-800 dark:text-slate-200 font-sans p-4 md:p-6 selection:bg-purple-200 selection:text-purple-900 pb-24 md:pb-20 safe-area-inset-bottom relative transition-colors duration-300">
+    <div className="min-h-screen bg-[#fffdf7] dark:bg-slate-950 text-slate-800 dark:text-slate-200 font-sans p-4 md:p-6 selection:bg-purple-200 selection:text-purple-900 pb-28 md:pb-20 safe-area-inset-bottom relative transition-colors duration-300 overflow-x-hidden">
       <NotificationBanner message={notification} onDismiss={() => setNotification(null)} />
 
       <Header
