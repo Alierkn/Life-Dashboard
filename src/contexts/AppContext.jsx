@@ -194,6 +194,27 @@ export function AppProvider({ children }) {
       });
   }, []);
 
+  // Sekme kapanırken/arka plana giderken hemen push (veri kaybını önle)
+  useEffect(() => {
+    const onHide = () => {
+      if (pushTimeoutRef.current) {
+        clearTimeout(pushTimeoutRef.current);
+        pushTimeoutRef.current = null;
+      }
+      pushSync(getSyncPayload()).catch(() => {});
+    };
+    const onVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') onHide();
+    };
+    const onBeforeUnload = () => onHide();
+    document.addEventListener('visibilitychange', onVisibilityChange);
+    window.addEventListener('beforeunload', onBeforeUnload);
+    return () => {
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+      window.removeEventListener('beforeunload', onBeforeUnload);
+    };
+  }, [getSyncPayload]);
+
   // Canlı senkronizasyon: periyodik polling + sekme görünür olduğunda hemen fetch
   const POLL_INTERVAL_MS = 5_000; // 5 saniye - cihazlar arası anlık senkron
   useEffect(() => {
@@ -260,7 +281,7 @@ export function AppProvider({ children }) {
           setSyncError(err.message);
         });
       pushTimeoutRef.current = null;
-    }, 1500);
+    }, 500);
   }, [getSyncPayload]);
 
   // Push to API when data changes (debounced)
