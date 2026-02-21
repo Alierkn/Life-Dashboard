@@ -176,13 +176,19 @@ export function AppProvider({ children }) {
     };
     fetchSync()
       .then((data) => {
-        applyServerData(data);
+        const serverHadData = (data.habits?.length || data.tasks?.length || data.lessons?.length || data.lessonTemplates?.length || data.students?.length || Object.keys(data.waterLogs || {}).length || Object.keys(data.coffeeLogs || {}).length || data.workoutLogs?.length || data.recipes?.length || data.mealLogs?.length || data.goals?.length) > 0;
+        const hasLocalData = (initialPayload.habits?.length || initialPayload.tasks?.length || initialPayload.lessons?.length || initialPayload.lessonTemplates?.length || initialPayload.students?.length || Object.keys(initialPayload.waterLogs || {}).length || Object.keys(initialPayload.coffeeLogs || {}).length || initialPayload.workoutLogs?.length || initialPayload.recipes?.length || initialPayload.mealLogs?.length || initialPayload.goals?.length) > 0;
+
+        if (serverHadData) {
+          applyServerData(data);
+        } else if (hasLocalData) {
+          // Sunucu boş, yerel veri var - üzerine yazma, sadece push et (veri kaybı önleme)
+          pushSync(initialPayload).then(() => {}).catch((e) => { setSyncStatus('error'); setSyncError(e.message); });
+        } else {
+          applyServerData(data);
+        }
         setSyncStatus('synced');
         setSyncError(null);
-        const serverHadData = (data.habits?.length || data.tasks?.length || data.lessons?.length || data.lessonTemplates?.length || data.students?.length) > 0;
-        if (!serverHadData && (initialPayload.habits?.length || initialPayload.tasks?.length || initialPayload.lessons?.length || initialPayload.lessonTemplates?.length || initialPayload.students?.length)) {
-          pushSync(initialPayload).then(() => setSyncStatus('synced')).catch((e) => { setSyncStatus('error'); setSyncError(e.message); });
-        }
       })
       .catch((err) => {
         setSyncStatus('error');
@@ -223,7 +229,10 @@ export function AppProvider({ children }) {
     const doFetch = () => {
       fetchSync()
         .then((data) => {
-          applyServerData(data);
+          const serverHadData = (data.habits?.length || data.tasks?.length || data.lessons?.length || data.lessonTemplates?.length || data.students?.length || Object.keys(data.waterLogs || {}).length || Object.keys(data.coffeeLogs || {}).length || data.workoutLogs?.length || data.recipes?.length || data.mealLogs?.length || data.goals?.length) > 0;
+          if (serverHadData) {
+            applyServerData(data);
+          }
           setSyncStatus((s) => (s === 'loading' ? s : 'synced'));
           setSyncError(null);
         })
