@@ -30,7 +30,7 @@ export default function TimerWidget({
   };
 
   return (
-    <div className="bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-[2rem] p-8 flex flex-col items-center justify-center text-center transition-colors">
+    <div className="bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-[2rem] p-4 md:p-8 flex flex-col items-center justify-center text-center transition-colors overflow-hidden">
       <div className="flex flex-col items-center gap-3 mb-6">
         <div className="bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-bold tracking-widest text-xs uppercase px-4 py-1.5 rounded-full border-2 border-slate-200 dark:border-slate-700">
           {timerMode === 'focus' ? 'Derin Çalışma' : 'Mola'}
@@ -38,11 +38,11 @@ export default function TimerWidget({
         {!timerActive && timerMode === 'focus' && (
           <div className="w-full flex flex-col gap-3 mt-2" role="group" aria-label="Süre seçin">
             <div className="flex flex-wrap justify-center gap-2">
-              {TIMER_DURATIONS.map((mins) => (
+                {TIMER_DURATIONS.map((mins) => (
                 <button
                   key={mins}
                   onClick={() => onDurationChange(mins)}
-                  className={`px-3 py-1 text-xs font-bold rounded-full border-2 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-400 ${timerDuration === mins ? 'bg-purple-100 dark:bg-purple-900/40 border-purple-300 dark:border-purple-600 text-purple-700 dark:text-purple-300' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:border-purple-200 dark:hover:border-purple-800'}`}
+                  className={`px-3 py-2 min-h-[44px] text-xs font-bold rounded-full border-2 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-400 touch-manipulation ${timerDuration === mins ? 'bg-purple-100 dark:bg-purple-900/40 border-purple-300 dark:border-purple-600 text-purple-700 dark:text-purple-300' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:border-purple-200 dark:hover:border-purple-800'}`}
                 >
                   {mins} dk
                 </button>
@@ -52,7 +52,7 @@ export default function TimerWidget({
               <button
                 onClick={() => adjustDuration(-5)}
                 disabled={timerDuration <= MIN_DURATION}
-                className="p-2 rounded-lg border-2 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                className="p-2 rounded-lg border-2 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors touch-target min-w-[44px] min-h-[44px] flex items-center justify-center"
                 aria-label="5 dakika azalt"
               >
                 <Minus className="w-4 h-4 text-slate-600 dark:text-slate-400" />
@@ -80,7 +80,7 @@ export default function TimerWidget({
               <button
                 onClick={() => adjustDuration(5)}
                 disabled={timerDuration >= MAX_DURATION}
-                className="p-2 rounded-lg border-2 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                className="p-2 rounded-lg border-2 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors touch-target min-w-[44px] min-h-[44px] flex items-center justify-center"
                 aria-label="5 dakika artır"
               >
                 <Plus className="w-4 h-4 text-slate-600 dark:text-slate-400" />
@@ -90,7 +90,7 @@ export default function TimerWidget({
         )}
       </div>
       <div
-        className="text-6xl font-black text-slate-900 dark:text-white mb-8 font-mono tracking-tight"
+        className="text-4xl sm:text-5xl md:text-6xl font-black text-slate-900 dark:text-white mb-6 md:mb-8 font-mono tracking-tight"
         aria-live="polite"
         aria-atomic="true"
       >

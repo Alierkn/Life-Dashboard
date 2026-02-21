@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:full": "vercel dev",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
@@ -12,6 +13,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.0.2",
     "lucide-react": "^0.575.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",

@@ -45,19 +45,19 @@ export default function SportWorkoutWidget({ workoutLogs, setWorkoutLogs }) {
           <div className="bg-emerald-100 dark:bg-emerald-900/30 p-2 rounded-xl border-2 border-emerald-200 dark:border-emerald-800">
             <Dumbbell className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
           </div>
-          <h2 className="text-2xl font-black text-slate-900 dark:text-white">Spor & Antrenman</h2>
+          <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">Spor & Antrenman</h2>
         </div>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="w-10 h-10 rounded-full border-2 border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-400 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors bg-white dark:bg-slate-900"
+          className="w-11 h-11 sm:w-10 sm:h-10 rounded-full border-2 border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-400 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors bg-white dark:bg-slate-900 touch-target"
           aria-label={showForm ? 'Formu kapat' : 'Antrenman ekle'}
         >
           <Plus className="w-5 h-5" />
         </button>
       </div>
 
-      {showForm && (
-        <form onSubmit={handleSubmit} className="mb-6 p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 space-y-3">
+        {showForm && (
+        <form onSubmit={handleSubmit} className="mb-6 p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 space-y-3 overflow-hidden">
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">Tür</label>
@@ -132,21 +132,21 @@ export default function SportWorkoutWidget({ workoutLogs, setWorkoutLogs }) {
           .map((w) => (
             <div
               key={w.id}
-              className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700"
+              className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700"
             >
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 min-w-0 flex-1">
                 <span className="font-bold text-slate-800 dark:text-white">{w.type}</span>
                 <span className="flex items-center gap-1 text-sm text-slate-500 dark:text-slate-400">
                   <Clock className="w-4 h-4" /> {w.duration} dk
                 </span>
-                {w.notes && <span className="text-xs text-slate-400 truncate max-w-[100px]">{w.notes}</span>}
+                {w.notes && <span className="text-xs text-slate-400 truncate max-w-[80px] sm:max-w-[120px]">{w.notes}</span>}
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-xs font-bold text-slate-400">{w.date}</span>
                 <button
                   onClick={() => deleteWorkout(w.id)}
-                  className="p-1 rounded hover:bg-red-100 dark:hover:bg-red-900/30 text-red-500"
-                  aria-label="Sil"
+                  className="p-2 min-w-[44px] min-h-[44px] rounded flex items-center justify-center hover:bg-red-100 dark:hover:bg-red-900/30 text-red-500 touch-manipulation"
+                  aria-label="Antrenmanı sil"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>

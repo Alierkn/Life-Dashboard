@@ -73,11 +73,11 @@ export default function TasksWidget({
 
   return (
     <div className="bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-[2rem] p-4 md:p-6 h-fit transition-colors overflow-hidden">
-      <div className="flex flex-wrap justify-between items-center gap-3 mb-6">
-        <h3 className="font-black text-xl text-slate-900 dark:text-white flex items-center gap-2">
-          <BookOpen className="w-6 h-6 text-blue-500" /> Görevler
+      <div className="flex flex-col sm:flex-row sm:flex-wrap sm:justify-between sm:items-center gap-3 mb-6">
+        <h3 className="font-black text-lg sm:text-xl text-slate-900 dark:text-white flex items-center gap-2">
+          <BookOpen className="w-5 h-5 sm:w-6 sm:h-6 text-blue-500" /> Görevler
         </h3>
-        <div className="flex items-center gap-2 flex-shrink-0">
+        <div className="flex flex-wrap items-center gap-2 flex-shrink-0">
           {onSetTaskFilterTag && (
             <select
               value={taskFilterTag}
@@ -117,7 +117,8 @@ export default function TasksWidget({
           )}
           <button
             onClick={() => onSetShowAddTask(!showAddTask)}
-            className="text-slate-400 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 p-2 rounded-full border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 transition-colors"
+            className="text-slate-400 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 p-2 rounded-full border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 transition-colors touch-target"
+            aria-label={showAddTask ? 'Görev eklemeyi kapat' : 'Yeni görev ekle'}
           >
             <Plus className="w-5 h-5" />
           </button>
@@ -185,7 +186,7 @@ export default function TasksWidget({
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => onToggleTask(task.id)}
-                  className={`w-6 h-6 rounded-md border-2 flex items-center justify-center cursor-pointer flex-shrink-0 transition-colors ${isCompleted ? 'bg-blue-500 border-blue-600' : 'bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600'}`}
+                  className={`w-8 h-8 sm:w-6 sm:h-6 rounded-md border-2 flex items-center justify-center cursor-pointer flex-shrink-0 transition-colors touch-manipulation ${isCompleted ? 'bg-blue-500 border-blue-600' : 'bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600'}`}
                 >
                   {isCompleted && <Check className="w-4 h-4 text-white stroke-[3]" />}
                 </button>
@@ -219,14 +220,16 @@ export default function TasksWidget({
                 {subs.length > 0 && (
                   <button
                     onClick={() => setExpandedTaskId(isExpanded ? null : task.id)}
-                    className="p-1 rounded text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
+                    className="p-2 rounded text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 touch-target min-w-[44px] min-h-[44px] flex items-center justify-center"
+                    aria-label={isExpanded ? 'Alt görevleri kapat' : 'Alt görevleri aç'}
                   >
                     {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                   </button>
                 )}
                 <button
                   onClick={() => onDeleteTask(task.id)}
-                  className="p-1 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                  className="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-slate-300 hover:text-red-500 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity touch-target min-w-[44px] min-h-[44px] flex items-center justify-center"
+                  aria-label="Görevi sil"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
@@ -238,14 +241,15 @@ export default function TasksWidget({
                     <div key={s.id} className="flex items-center gap-2">
                       <button
                         onClick={() => onToggleSubtask?.(task.id, s.id)}
-                        className={`w-4 h-4 rounded border flex items-center justify-center flex-shrink-0 ${s.completed ? 'bg-green-500 border-green-600' : 'border-slate-300 dark:border-slate-600'}`}
+                        className={`w-6 h-6 sm:w-4 sm:h-4 rounded border flex items-center justify-center flex-shrink-0 touch-manipulation ${s.completed ? 'bg-green-500 border-green-600' : 'border-slate-300 dark:border-slate-600'}`}
                       >
                         {s.completed && <Check className="w-2.5 h-2.5 text-white stroke-[3]" />}
                       </button>
                       <span className={`text-xs flex-1 ${s.completed ? 'line-through text-slate-400' : ''}`}>{s.text}</span>
                       <button
                         onClick={() => onDeleteSubtask?.(task.id, s.id)}
-                        className="p-0.5 text-slate-400 hover:text-red-500"
+                        className="p-2 min-w-[36px] min-h-[36px] flex items-center justify-center text-slate-400 hover:text-red-500 touch-manipulation"
+                        aria-label="Alt görevi sil"
                       >
                         <Trash2 className="w-3 h-3" />
                       </button>

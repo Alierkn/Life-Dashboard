@@ -37,7 +37,7 @@ export default function WidgetWrapper({ id, column, isEditLayoutMode, onMoveWidg
           {column === 'right' && (
             <button
               onClick={() => onMoveWidget(id, column, 'left')}
-              className="p-1 text-white hover:bg-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
+              className="p-2 min-w-[36px] min-h-[36px] text-white hover:bg-slate-700 rounded-lg flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-purple-400 touch-manipulation"
               aria-label="Sola taşı"
             >
               <MoveLeftIcon className="w-4 h-4" />
@@ -45,14 +45,14 @@ export default function WidgetWrapper({ id, column, isEditLayoutMode, onMoveWidg
           )}
           <button
             onClick={() => onMoveWidget(id, column, 'up')}
-            className="p-1 text-white hover:bg-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
+            className="p-2 min-w-[36px] min-h-[36px] text-white hover:bg-slate-700 rounded-lg flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-purple-400 touch-manipulation"
             aria-label="Yukarı taşı"
           >
             <ArrowUp className="w-4 h-4" />
           </button>
           <button
             onClick={() => onMoveWidget(id, column, 'down')}
-            className="p-1 text-white hover:bg-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
+            className="p-2 min-w-[36px] min-h-[36px] text-white hover:bg-slate-700 rounded-lg flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-purple-400 touch-manipulation"
             aria-label="Aşağı taşı"
           >
             <ArrowDown className="w-4 h-4" />
@@ -60,7 +60,7 @@ export default function WidgetWrapper({ id, column, isEditLayoutMode, onMoveWidg
           {column === 'left' && (
             <button
               onClick={() => onMoveWidget(id, column, 'right')}
-              className="p-1 text-white hover:bg-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
+              className="p-2 min-w-[36px] min-h-[36px] text-white hover:bg-slate-700 rounded-lg flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-purple-400 touch-manipulation"
               aria-label="Sağa taşı"
             >
               <ArrowRight className="w-4 h-4" />

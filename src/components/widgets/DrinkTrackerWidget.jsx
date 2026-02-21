@@ -46,11 +46,11 @@ export default function DrinkTrackerWidget({
 
   return (
     <div className="bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-[2rem] p-4 md:p-6 transition-colors overflow-hidden">
-      <div className="flex items-center gap-3 mb-6">
+        <div className="flex items-center gap-3 mb-6">
         <div className="bg-cyan-100 dark:bg-cyan-900/30 p-2 rounded-xl border-2 border-cyan-200 dark:border-cyan-800">
-          <Droplets className="w-6 h-6 text-cyan-600 dark:text-cyan-400" />
+          <Droplets className="w-5 h-5 sm:w-6 sm:h-6 text-cyan-600 dark:text-cyan-400" />
         </div>
-        <h2 className="text-2xl font-black text-slate-900 dark:text-white">Su & Kahve</h2>
+        <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">Su & Kahve</h2>
       </div>
 
       <div className="space-y-6">
@@ -73,14 +73,14 @@ export default function DrinkTrackerWidget({
             <button
               onClick={removeWater}
               disabled={waterToday <= 0}
-              className="p-2 rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+              className="p-3 min-w-[44px] min-h-[44px] rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors flex items-center justify-center touch-manipulation"
               aria-label="1 bardak çıkar"
             >
               <Minus className="w-5 h-5 text-slate-600 dark:text-slate-400" />
             </button>
             <button
               onClick={addWater}
-              className="flex-1 py-3 rounded-xl bg-cyan-500 text-white font-bold border-2 border-cyan-600 hover:bg-cyan-600 transition-colors flex items-center justify-center gap-2"
+              className="flex-1 min-h-[44px] py-3 rounded-xl bg-cyan-500 text-white font-bold border-2 border-cyan-600 hover:bg-cyan-600 transition-colors flex items-center justify-center gap-2 touch-manipulation"
             >
               <Plus className="w-5 h-5" /> Bardak Ekle
             </button>
@@ -99,14 +99,14 @@ export default function DrinkTrackerWidget({
             <button
               onClick={removeCoffee}
               disabled={coffeeToday <= 0}
-              className="p-2 rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+              className="p-3 min-w-[44px] min-h-[44px] rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors flex items-center justify-center touch-manipulation"
               aria-label="1 fincan çıkar"
             >
               <Minus className="w-5 h-5 text-slate-600 dark:text-slate-400" />
             </button>
             <button
               onClick={addCoffee}
-              className="flex-1 py-3 rounded-xl bg-amber-600 text-white font-bold border-2 border-amber-700 hover:bg-amber-700 transition-colors flex items-center justify-center gap-2"
+              className="flex-1 min-h-[44px] py-3 rounded-xl bg-amber-600 text-white font-bold border-2 border-amber-700 hover:bg-amber-700 transition-colors flex items-center justify-center gap-2 touch-manipulation"
             >
               <Plus className="w-5 h-5" /> Fincan Ekle
             </button>

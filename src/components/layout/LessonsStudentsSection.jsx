@@ -67,7 +67,7 @@ export default function LessonsStudentsSection({ students, setStudents }) {
         <h3 className="font-bold text-lg text-slate-800 dark:text-slate-200">Öğrenci Profilleri</h3>
         <button
           onClick={() => (showForm ? resetForm() : setShowForm(true))}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500 text-white font-bold border-2 border-amber-600 hover:bg-amber-600"
+          className="flex items-center gap-2 px-4 py-3 min-h-[44px] rounded-xl bg-amber-500 text-white font-bold border-2 border-amber-600 hover:bg-amber-600 touch-manipulation"
         >
           <Plus className="w-5 h-5" />
           Yeni Öğrenci
@@ -75,7 +75,7 @@ export default function LessonsStudentsSection({ students, setStudents }) {
       </div>
 
       {showForm && (
-        <form onSubmit={handleSubmit} className="p-6 rounded-2xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800">
+        <form onSubmit={handleSubmit} className="p-4 md:p-6 rounded-2xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 overflow-hidden">
           <h4 className="font-bold mb-4">{editingId ? 'Öğrenciyi Düzenle' : 'Yeni Öğrenci'}</h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>

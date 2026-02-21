@@ -28,11 +28,11 @@ export default function HabitsWidget({
           <div className="bg-green-100 dark:bg-green-900/30 p-2 rounded-xl border-2 border-green-200 dark:border-green-800">
             <Check className="w-6 h-6 text-green-600 dark:text-green-400" />
           </div>
-          <h2 className="text-2xl font-black text-slate-900 dark:text-white">Alışkanlıklar & Seriler</h2>
+          <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">Alışkanlıklar & Seriler</h2>
         </div>
         <button
           onClick={() => onSetShowAddHabit(!showAddHabit)}
-          className="w-10 h-10 rounded-full border-2 border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-400 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors bg-white dark:bg-slate-900"
+          className="w-11 h-11 sm:w-10 sm:h-10 rounded-full border-2 border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-400 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors bg-white dark:bg-slate-900 touch-target"
           aria-label={showAddHabit ? 'Alışkanlık eklemeyi kapat' : 'Yeni alışkanlık ekle'}
         >
           <Plus className="w-5 h-5" />
@@ -159,7 +159,7 @@ export default function HabitsWidget({
                   </div>
                   <button
                     onClick={() => onSetExpandedHabitId(isExpanded ? null : habit.id)}
-                    className="p-1.5 rounded-lg text-slate-400 dark:text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                    className="p-2 min-w-[44px] min-h-[44px] rounded-lg text-slate-400 dark:text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors flex items-center justify-center touch-manipulation"
                     aria-expanded={isExpanded}
                     aria-label={isExpanded ? 'Detayları kapat' : 'Detayları aç'}
                   >
@@ -175,7 +175,8 @@ export default function HabitsWidget({
                     </h5>
                     <button
                       onClick={() => onDeleteHabit(habit.id)}
-                      className="text-xs text-red-500 font-bold hover:underline flex items-center gap-1"
+                      className="text-xs text-red-500 font-bold hover:underline flex items-center gap-1 py-2 px-2 min-h-[36px] touch-manipulation"
+                      aria-label="Alışkanlığı sil"
                     >
                       <Trash2 className="w-3 h-3" /> Sil
                     </button>

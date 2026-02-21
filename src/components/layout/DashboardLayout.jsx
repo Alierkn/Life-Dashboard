@@ -100,7 +100,7 @@ export default function DashboardLayout({
   };
 
   return (
-    <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 animate-fade-in">
+    <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-8 animate-fade-in overflow-hidden">
       {renderColumn('left', leftLayout)}
       {renderColumn('right', rightLayout)}
     </div>

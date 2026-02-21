@@ -18,13 +18,13 @@ export default function FoodLayout({ recipes, setRecipes, mealLogs, setMealLogs 
   const todayStr = getTodayString();
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
+    <div className="max-w-5xl mx-auto space-y-6 overflow-hidden">
       <div className="flex items-center gap-3 mb-6">
-        <div className="bg-orange-100 dark:bg-orange-900/30 p-3 rounded-2xl border-2 border-orange-200 dark:border-orange-800">
-          <UtensilsCrossed className="w-8 h-8 text-orange-600 dark:text-orange-400" />
+        <div className="bg-orange-100 dark:bg-orange-900/30 p-2 sm:p-3 rounded-2xl border-2 border-orange-200 dark:border-orange-800">
+          <UtensilsCrossed className="w-6 h-6 sm:w-8 sm:h-8 text-orange-600 dark:text-orange-400" />
         </div>
-        <div>
-          <h1 className="text-2xl font-black text-slate-900 dark:text-white">Yemek & Tarifler</h1>
+        <div className="min-w-0">
+          <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">Yemek & Tarifler</h1>
           <p className="text-sm text-slate-500 dark:text-slate-400">Tarif kaydet, ne yediğini takip et</p>
         </div>
       </div>
@@ -32,7 +32,7 @@ export default function FoodLayout({ recipes, setRecipes, mealLogs, setMealLogs 
       <div className="flex gap-2 p-1 rounded-xl bg-slate-100 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700">
         <button
           onClick={() => setActiveTab('meals')}
-          className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-lg font-bold transition-colors ${
+          className={`flex-1 flex items-center justify-center gap-1 sm:gap-2 py-3 min-h-[44px] rounded-lg font-bold text-sm sm:text-base transition-colors touch-manipulation ${
             activeTab === 'meals'
               ? 'bg-orange-500 text-white border-2 border-orange-600'
               : 'text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
@@ -42,7 +42,7 @@ export default function FoodLayout({ recipes, setRecipes, mealLogs, setMealLogs 
         </button>
         <button
           onClick={() => setActiveTab('recipes')}
-          className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-lg font-bold transition-colors ${
+          className={`flex-1 flex items-center justify-center gap-1 sm:gap-2 py-3 min-h-[44px] rounded-lg font-bold text-sm sm:text-base transition-colors touch-manipulation ${
             activeTab === 'recipes'
               ? 'bg-orange-500 text-white border-2 border-orange-600'
               : 'text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
@@ -103,23 +103,23 @@ function MealsSection({ mealLogs, setMealLogs, recipes, todayStr }) {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap gap-2 items-center justify-between">
+      <div className="flex flex-col sm:flex-row flex-wrap gap-2 items-stretch sm:items-center justify-between">
         <input
           type="date"
           value={selectedDate}
           onChange={(e) => setSelectedDate(e.target.value)}
-          className="px-4 py-2 rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 font-bold"
+          className="px-4 py-3 min-h-[44px] rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 font-bold flex-1 sm:flex-initial"
         />
         <button
           onClick={() => setShowForm(!showForm)}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-orange-500 text-white font-bold hover:bg-orange-600"
+          className="flex items-center justify-center gap-2 px-4 py-3 min-h-[44px] rounded-xl bg-orange-500 text-white font-bold hover:bg-orange-600 touch-manipulation"
         >
           <Plus className="w-5 h-5" /> Yemek Ekle
         </button>
       </div>
 
       {showForm && (
-        <form onSubmit={handleSubmit} className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 space-y-4">
+        <form onSubmit={handleSubmit} className="p-4 md:p-6 rounded-2xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 space-y-4 overflow-hidden">
           <div>
             <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">Öğün</label>
             <select
@@ -189,8 +189,8 @@ function MealsSection({ mealLogs, setMealLogs, recipes, todayStr }) {
                     <span className="font-medium text-slate-800 dark:text-slate-200">{m.description}</span>
                     <button
                       onClick={() => deleteMeal(m.id)}
-                      className="p-1 rounded hover:bg-red-100 dark:hover:bg-red-900/30 text-red-500"
-                      aria-label="Sil"
+                      className="p-2 min-w-[44px] min-h-[44px] rounded flex items-center justify-center hover:bg-red-100 dark:hover:bg-red-900/30 text-red-500 touch-manipulation"
+                      aria-label="Yemeği sil"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -276,7 +276,7 @@ function RecipesSection({ recipes, setRecipes }) {
             setFormData({ title: '', ingredients: '', instructions: '', prepTime: '', cookTime: '', servings: '', category: '' });
             setShowForm(!showForm);
           }}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-orange-500 text-white font-bold hover:bg-orange-600"
+          className="flex items-center gap-2 px-4 py-3 min-h-[44px] rounded-xl bg-orange-500 text-white font-bold hover:bg-orange-600 touch-manipulation"
         >
           <Plus className="w-5 h-5" /> Tarif Ekle
         </button>
@@ -295,7 +295,7 @@ function RecipesSection({ recipes, setRecipes }) {
               required
             />
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div>
               <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">Hazırlık (dk)</label>
               <input
@@ -384,10 +384,10 @@ function RecipesSection({ recipes, setRecipes }) {
             className="rounded-2xl border-2 border-slate-200 dark:border-slate-700 overflow-hidden bg-white dark:bg-slate-900"
           >
             <div
-              className="flex items-center justify-between p-4 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800"
+              className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 p-4 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 min-h-[44px]"
               onClick={() => setExpandedId(expandedId === r.id ? null : r.id)}
             >
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 min-w-0 flex-1">
                 <h3 className="font-bold text-lg text-slate-800 dark:text-white">{r.title}</h3>
                 {(r.prepTime || r.cookTime || r.servings) && (
                   <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
@@ -397,17 +397,17 @@ function RecipesSection({ recipes, setRecipes }) {
                 )}
               </div>
               <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
-                <button
-                  onClick={() => startEdit(r)}
-                  className="p-2 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-400"
-                  aria-label="Düzenle"
-                >
+                    <button
+                      onClick={() => startEdit(r)}
+                      className="p-2 min-w-[44px] min-h-[44px] rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-400 flex items-center justify-center touch-manipulation"
+                      aria-label="Düzenle"
+                    >
                   <Edit className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => deleteRecipe(r.id)}
-                  className="p-2 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30 text-red-500"
-                  aria-label="Sil"
+                  className="p-2 min-w-[44px] min-h-[44px] rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30 text-red-500 flex items-center justify-center touch-manipulation"
+                  aria-label="Tarifi sil"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>

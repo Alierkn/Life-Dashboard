@@ -1,4 +1,5 @@
-import { User, Edit, Settings, Download, Upload, Trash2, TrendingUp } from 'lucide-react';
+import { useState } from 'react';
+import { User, Edit, Settings, Download, Upload, Trash2, TrendingUp, Cloud, CloudOff, Copy, RefreshCw } from 'lucide-react';
 import { getRankTitle } from '../../utils/helpers';
 
 export default function ProfileLayout({
@@ -13,14 +14,19 @@ export default function ProfileLayout({
   onExport,
   onImport,
   isImporting,
+  syncStatus,
+  syncError,
+  deviceId,
+  setDeviceId,
 }) {
+  const [deviceIdInput, setDeviceIdInput] = useState('');
   const currentLevelXp = userStats.xp % 1000;
   const xpProgressPercent = (currentLevelXp / 1000) * 100;
 
   return (
-    <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 animate-slide-up">
+    <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 animate-slide-up overflow-hidden">
       <div className="md:col-span-4 flex flex-col gap-6">
-        <div className="bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-[2rem] p-8 flex flex-col items-center justify-center text-center">
+        <div className="bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-[2rem] p-4 md:p-8 flex flex-col items-center justify-center text-center overflow-hidden">
           <div className="w-24 h-24 bg-purple-100 dark:bg-purple-900/30 border-2 border-purple-300 dark:border-purple-600 rounded-[2rem] flex items-center justify-center mb-6">
             <User className="w-10 h-10 text-purple-600 dark:text-purple-400" />
           </div>
@@ -48,7 +54,7 @@ export default function ProfileLayout({
               onClick={() => setIsEditingName(true)}
               className="flex items-center gap-2 mb-2 group cursor-pointer focus:outline-none focus:ring-2 focus:ring-purple-400 rounded-lg px-2"
             >
-              <h2 className="text-2xl font-black text-slate-900 dark:text-white">{userName}</h2>
+              <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white break-words">{userName}</h2>
               <Edit className="w-4 h-4 text-slate-300 dark:text-slate-600 group-hover:text-purple-500 transition-colors" />
             </button>
           )}
@@ -83,19 +89,68 @@ export default function ProfileLayout({
               <Settings className="w-5 h-5 text-slate-500" /> Veri Yönetimi
             </h3>
             <p className="text-slate-500 text-xs font-bold mt-2 leading-relaxed">
-              Verilerin sadece senin cihazında (Local Storage) saklanır. Kaybolmamaları için yedeğini al.
+              Veriler Neon veritabanında senkronize edilir. Telefon ve bilgisayarda aynı veriyi görmek için aynı cihaz kodunu kullanın.
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-2 mt-2">
+          {deviceId && (
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                {syncStatus === 'synced' && <Cloud className="w-4 h-4 text-green-500" />}
+                {syncStatus === 'error' && <CloudOff className="w-4 h-4 text-red-500" />}
+                {(syncStatus === 'loading' || syncStatus === 'idle') && <RefreshCw className="w-4 h-4 text-slate-400 animate-spin" />}
+                <span className="text-xs font-bold text-slate-500">
+                  {syncStatus === 'synced' && 'Bulut senkronize'}
+                  {syncStatus === 'error' && (syncError || 'Senkronizasyon hatası')}
+                  {(syncStatus === 'loading' || syncStatus === 'idle') && 'Yükleniyor...'}
+                </span>
+              </div>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={deviceId}
+                  readOnly
+                  className="flex-1 px-3 py-2 rounded-lg border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-mono truncate"
+                />
+                <button
+                  onClick={() => { navigator.clipboard?.writeText(deviceId); }}
+                  className="px-3 py-2 rounded-lg border-2 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 font-bold text-xs touch-manipulation"
+                  title="Kopyala"
+                >
+                  <Copy className="w-4 h-4" />
+                </button>
+              </div>
+              <p className="text-[10px] text-slate-400">Bu kodu diğer cihazda yapıştırın</p>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={deviceIdInput}
+                  onChange={(e) => setDeviceIdInput(e.target.value)}
+                  placeholder="Cihaz kodu yapıştırın"
+                  className="flex-1 px-3 py-2 rounded-lg border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm"
+                />
+                <button
+                  onClick={() => setDeviceId(deviceIdInput)}
+                  disabled={!deviceIdInput.trim()}
+                  className="px-3 py-2 rounded-lg bg-purple-500 text-white font-bold text-sm disabled:opacity-50 touch-manipulation"
+                >
+                  Eşle
+                </button>
+              </div>
+            </div>
+          )}
+
+          <div className="border-t border-slate-200 dark:border-slate-700 pt-4">
+            <p className="text-slate-500 text-xs font-bold mb-2">Yedekle (JSON)</p>
+            <div className="grid grid-cols-2 gap-2 mt-2">
             <button
               onClick={onExport}
               disabled={isImporting}
-              className="bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 font-bold px-3 py-2 rounded-xl border-2 border-blue-200 dark:border-blue-800 hover:bg-blue-100 transition-colors flex items-center justify-center gap-2 text-xs disabled:opacity-50"
+              className="bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 font-bold px-3 py-3 min-h-[44px] rounded-xl border-2 border-blue-200 dark:border-blue-800 hover:bg-blue-100 transition-colors flex items-center justify-center gap-2 text-xs disabled:opacity-50 touch-manipulation"
             >
               <Download className="w-4 h-4" /> İndir
             </button>
-            <label className="bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold px-3 py-2 rounded-xl border-2 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors flex items-center justify-center gap-2 text-xs cursor-pointer">
+            <label className="bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold px-3 py-3 min-h-[44px] rounded-xl border-2 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors flex items-center justify-center gap-2 text-xs cursor-pointer touch-manipulation">
               <Upload className="w-4 h-4" /> {isImporting ? 'Yükleniyor...' : 'Yükle'}
               <input type="file" accept=".json" onChange={onImport} className="hidden" disabled={isImporting} />
             </label>
@@ -108,10 +163,11 @@ export default function ProfileLayout({
                 window.location.reload();
               }
             }}
-            className="w-full mt-2 bg-white dark:bg-slate-900 text-red-500 font-bold px-4 py-3 rounded-xl border-2 border-red-200 dark:border-red-900 hover:bg-red-50 dark:hover:bg-red-900/30 hover:border-red-500 transition-colors flex items-center justify-center gap-2"
+            className="w-full mt-2 bg-white dark:bg-slate-900 text-red-500 font-bold px-4 py-3 min-h-[44px] rounded-xl border-2 border-red-200 dark:border-red-900 hover:bg-red-50 dark:hover:bg-red-900/30 hover:border-red-500 transition-colors flex items-center justify-center gap-2 touch-manipulation"
           >
             <Trash2 className="w-4 h-4" /> Tüm Verileri Sil
           </button>
+          </div>
         </div>
       </div>
 
@@ -120,7 +176,7 @@ export default function ProfileLayout({
           <h3 className="font-black text-xl text-slate-900 dark:text-white flex items-center gap-2 mb-6">
             <TrendingUp className="w-6 h-6 text-green-500" /> Genel Bakış
           </h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
             <div className="bg-slate-50 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-2xl p-4 flex flex-col">
               <span className="text-slate-400 font-bold text-[10px] uppercase tracking-wider mb-1">Toplam XP</span>
               <span className="text-2xl font-black text-slate-800 dark:text-white">{userStats.xp}</span>

@@ -52,17 +52,17 @@ export default function CalendarWidget({ habits, tasks, taskLogs, onToggleHabitD
         <div className="flex items-center gap-1">
           <button
             onClick={goPrevMonth}
-            className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            className="p-2 min-w-[44px] min-h-[44px] rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors flex items-center justify-center touch-manipulation"
             aria-label="Önceki ay"
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
-          <span className="font-bold text-sm min-w-[120px] text-center">
+          <span className="font-bold text-xs sm:text-sm min-w-[100px] sm:min-w-[120px] text-center">
             {monthName} {year}
           </span>
           <button
             onClick={goNextMonth}
-            className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            className="p-2 min-w-[44px] min-h-[44px] rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors flex items-center justify-center touch-manipulation"
             aria-label="Sonraki ay"
           >
             <ChevronRight className="w-4 h-4" />
@@ -70,8 +70,8 @@ export default function CalendarWidget({ habits, tasks, taskLogs, onToggleHabitD
         </div>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full border-collapse text-sm">
+      <div className="overflow-x-auto -mx-1 px-1 scrollbar-hide">
+        <table className="w-full min-w-[280px] border-collapse text-xs sm:text-sm">
           <thead>
             <tr>
               {DAY_NAMES.map((d) => (
@@ -98,7 +98,7 @@ export default function CalendarWidget({ habits, tasks, taskLogs, onToggleHabitD
                     <td key={ci} className="p-0.5 align-top">
                       <div
                         onClick={() => !isFuture && setSelectedDate(dateStr)}
-                        className={`min-h-[52px] rounded-lg border-2 p-1 cursor-pointer transition-colors ${
+                        className={`min-h-[48px] sm:min-h-[52px] rounded-lg border-2 p-1 cursor-pointer transition-colors touch-manipulation ${
                           isFuture
                             ? 'bg-slate-50 dark:bg-slate-800/50 border-slate-100 dark:border-slate-800 cursor-not-allowed opacity-60'
                             : isSelected

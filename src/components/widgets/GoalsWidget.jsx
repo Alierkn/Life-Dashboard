@@ -18,7 +18,7 @@ export default function GoalsWidget({
         </h3>
         <button
           onClick={() => onSetShowAddGoal(!showAddGoal)}
-          className="text-slate-400 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 p-2 rounded-full border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 transition-colors"
+          className="text-slate-400 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 p-2 rounded-full border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 transition-colors touch-target"
           aria-label={showAddGoal ? 'Hedef eklemeyi kapat' : 'Yeni hedef ekle'}
         >
           <Plus className="w-5 h-5" />
@@ -72,7 +72,7 @@ export default function GoalsWidget({
             >
               <button
                 onClick={() => onDeleteGoal(goal.id)}
-                className={`absolute top-2 right-2 p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-red-400 ${isCompleted ? 'text-green-600 hover:bg-green-200' : 'text-slate-400 hover:text-white hover:bg-slate-700'}`}
+                className={`absolute top-2 right-2 p-2 min-w-[44px] min-h-[44px] rounded-lg opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-red-400 flex items-center justify-center touch-manipulation ${isCompleted ? 'text-green-600 hover:bg-green-200' : 'text-slate-400 hover:text-white hover:bg-slate-700'}`}
                 aria-label={`${goal.title} hedefini sil`}
               >
                 <Trash2 className="w-4 h-4" />
@@ -111,7 +111,7 @@ export default function GoalsWidget({
                     </span>
                     <button
                       onClick={() => onUpdateGoalProgress(goal.id, 1)}
-                      className="text-xs font-bold px-2 py-1 rounded-lg bg-orange-500/80 hover:bg-orange-500 text-white transition-colors"
+                      className="text-xs font-bold px-3 py-2 min-h-[44px] rounded-lg bg-orange-500/80 hover:bg-orange-500 text-white transition-colors touch-manipulation flex items-center"
                       aria-label={`${goal.title} ilerlemesini artır`}
                     >
                       + Artır

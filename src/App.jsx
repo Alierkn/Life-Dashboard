@@ -71,6 +71,10 @@ function AppContent() {
     isImporting,
     setIsImporting,
     addXp,
+    syncStatus,
+    syncError,
+    deviceId,
+    setDeviceId,
   } = useApp();
 
   const [isEditLayoutMode, setIsEditLayoutMode] = useState(false);
@@ -672,6 +676,10 @@ function AppContent() {
             onExport={handleExport}
             onImport={handleImport}
             isImporting={isImporting}
+            syncStatus={syncStatus}
+            syncError={syncError}
+            deviceId={deviceId}
+            setDeviceId={setDeviceId}
           />
         </Suspense>
       )}

@@ -249,37 +249,37 @@ export default function LessonsLayout({
   };
 
   return (
-    <div className="max-w-5xl mx-auto">
+    <div className="max-w-5xl mx-auto overflow-hidden">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-        <h2 className="text-2xl font-black text-slate-900 dark:text-white flex items-center gap-3">
+        <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white flex items-center gap-3">
           <div className="bg-amber-500 p-2 rounded-xl border-2 border-amber-600">
             <GraduationCap className="w-6 h-6 text-white" />
           </div>
           Özel Derslerim
         </h2>
         <div className="flex flex-wrap gap-2">
-          <div className="flex rounded-lg border-2 border-slate-200 dark:border-slate-700 p-0.5">
+          <div className="flex flex-wrap rounded-lg border-2 border-slate-200 dark:border-slate-700 p-0.5">
             <button
               onClick={() => setMainTab('lessons')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-bold transition-colors ${mainTab === 'lessons' ? 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300' : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'}`}
+              className={`flex items-center gap-1.5 px-3 py-2 min-h-[44px] rounded-md text-xs sm:text-sm font-bold transition-colors touch-manipulation ${mainTab === 'lessons' ? 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300' : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'}`}
             >
               <Calendar className="w-4 h-4" /> Dersler
             </button>
             <button
               onClick={() => setMainTab('templates')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-bold transition-colors ${mainTab === 'templates' ? 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300' : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'}`}
+              className={`flex items-center gap-1.5 px-3 py-2 min-h-[44px] rounded-md text-xs sm:text-sm font-bold transition-colors touch-manipulation ${mainTab === 'templates' ? 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300' : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'}`}
             >
               <LayoutTemplate className="w-4 h-4" /> Şablonlar
             </button>
             <button
               onClick={() => setMainTab('students')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-bold transition-colors ${mainTab === 'students' ? 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300' : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'}`}
+              className={`flex items-center gap-1.5 px-3 py-2 min-h-[44px] rounded-md text-xs sm:text-sm font-bold transition-colors touch-manipulation ${mainTab === 'students' ? 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300' : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'}`}
             >
               <Users className="w-4 h-4" /> Öğrenciler
             </button>
             <button
               onClick={() => setMainTab('finance')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-bold transition-colors ${mainTab === 'finance' ? 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300' : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'}`}
+              className={`flex items-center gap-1.5 px-3 py-2 min-h-[44px] rounded-md text-xs sm:text-sm font-bold transition-colors touch-manipulation ${mainTab === 'finance' ? 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300' : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'}`}
             >
               <Wallet className="w-4 h-4" /> Finans
             </button>
@@ -289,20 +289,20 @@ export default function LessonsLayout({
               <div className="flex rounded-lg border-2 border-slate-200 dark:border-slate-700 p-0.5">
                 <button
                   onClick={() => setViewMode('calendar')}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-bold transition-colors ${viewMode === 'calendar' ? 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300' : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'}`}
+                  className={`flex items-center gap-1.5 px-3 py-2 min-h-[44px] rounded-md text-xs sm:text-sm font-bold transition-colors touch-manipulation ${viewMode === 'calendar' ? 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300' : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'}`}
                 >
                   <CalendarDays className="w-4 h-4" /> Takvim
                 </button>
                 <button
                   onClick={() => setViewMode('list')}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-bold transition-colors ${viewMode === 'list' ? 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300' : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'}`}
+                  className={`flex items-center gap-1.5 px-3 py-2 min-h-[44px] rounded-md text-xs sm:text-sm font-bold transition-colors touch-manipulation ${viewMode === 'list' ? 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300' : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'}`}
                 >
                   <List className="w-4 h-4" /> Liste
                 </button>
               </div>
               <button
                 onClick={() => (showForm ? resetForm() : setShowForm(true))}
-                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500 text-white font-bold border-2 border-amber-600 hover:bg-amber-600 transition-colors"
+                className="flex items-center gap-2 px-4 py-3 min-h-[44px] rounded-xl bg-amber-500 text-white font-bold border-2 border-amber-600 hover:bg-amber-600 transition-colors touch-manipulation"
               >
                 <Plus className="w-5 h-5" />
                 Yeni Ders
@@ -313,7 +313,7 @@ export default function LessonsLayout({
       </div>
 
       {mainTab === 'templates' && (
-        <div className="p-6 rounded-2xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800">
+        <div className="p-4 md:p-6 rounded-2xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 overflow-hidden">
           <LessonsTemplatesSection
             templates={lessonTemplates}
             setTemplates={setLessonTemplates}
@@ -323,13 +323,13 @@ export default function LessonsLayout({
       )}
 
       {mainTab === 'students' && (
-        <div className="p-6 rounded-2xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800">
+        <div className="p-4 md:p-6 rounded-2xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 overflow-hidden">
           <LessonsStudentsSection students={students} setStudents={setStudents} />
         </div>
       )}
 
       {mainTab === 'finance' && (
-        <div className="p-6 rounded-2xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800">
+        <div className="p-4 md:p-6 rounded-2xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 overflow-hidden">
           <LessonsFinanceSection
             lessons={safeLessons}
             expenses={expenses}
@@ -415,7 +415,7 @@ export default function LessonsLayout({
       {showForm && (
         <form
           onSubmit={handleSubmit}
-          className="mb-8 p-6 rounded-2xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800"
+          className="mb-8 p-4 md:p-6 rounded-2xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 overflow-hidden"
         >
           <h3 className="font-bold text-lg mb-4 text-slate-800 dark:text-slate-200">
             {editingId ? 'Dersi Düzenle' : 'Yeni Ders'}

@@ -1,6 +1,7 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { getTodayString, getDaysBetween } from '../utils/date';
-import { STORAGE_KEYS, XP, XP_PER_LEVEL, NOTIFICATION_AUTO_DISMISS_MS } from '../constants';
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
+import { getTodayString } from '../utils/date';
+import { STORAGE_KEYS, XP_PER_LEVEL, NOTIFICATION_AUTO_DISMISS_MS } from '../constants';
+import { fetchSync, pushSync, getDeviceId } from '../api/sync';
 
 const migrateLayout = (layout, defaultLayout) => {
   let base = layout && Array.isArray(layout) ? layout : defaultLayout;
@@ -9,6 +10,7 @@ const migrateLayout = (layout, defaultLayout) => {
   base = base.filter((id) => id !== 'drinks' && id !== 'sport');
   return base;
 };
+
 import {
   getDefaultHabits,
   getDefaultTasks,
@@ -17,33 +19,31 @@ import {
   getDefaultLayout,
 } from '../constants/defaults';
 
-const AppContext = createContext(null);
-
-export function AppProvider({ children }) {
-  const [theme, setTheme] = useState(() => localStorage.getItem(STORAGE_KEYS.THEME) || 'light');
-  const [habits, setHabits] = useState(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.HABITS);
-    return saved ? JSON.parse(saved) : getDefaultHabits();
-  });
-  const [tasks, setTasks] = useState(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.TASKS);
-    return saved ? JSON.parse(saved) : getDefaultTasks();
-  });
-  const [taskLogs, setTaskLogs] = useState(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.TASK_LOGS);
-    return saved ? JSON.parse(saved) : [getTodayString()];
-  });
-  const [goals, setGoals] = useState(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.GOALS);
-    return saved ? JSON.parse(saved) : getDefaultGoals();
-  });
-  const [userStats, setUserStats] = useState(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.STATS);
-    return saved ? JSON.parse(saved) : getDefaultUserStats();
-  });
-  const [leftLayout, setLeftLayout] = useState(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.LAYOUT_LEFT);
-    let base = saved ? JSON.parse(saved) : getDefaultLayout().left;
+const loadFromStorage = () => ({
+  theme: localStorage.getItem(STORAGE_KEYS.THEME) || 'light',
+  habits: (() => {
+    const s = localStorage.getItem(STORAGE_KEYS.HABITS);
+    return s ? JSON.parse(s) : getDefaultHabits();
+  })(),
+  tasks: (() => {
+    const s = localStorage.getItem(STORAGE_KEYS.TASKS);
+    return s ? JSON.parse(s) : getDefaultTasks();
+  })(),
+  taskLogs: (() => {
+    const s = localStorage.getItem(STORAGE_KEYS.TASK_LOGS);
+    return s ? JSON.parse(s) : [getTodayString()];
+  })(),
+  goals: (() => {
+    const s = localStorage.getItem(STORAGE_KEYS.GOALS);
+    return s ? JSON.parse(s) : getDefaultGoals();
+  })(),
+  userStats: (() => {
+    const s = localStorage.getItem(STORAGE_KEYS.STATS);
+    return s ? JSON.parse(s) : getDefaultUserStats();
+  })(),
+  leftLayout: (() => {
+    const s = localStorage.getItem(STORAGE_KEYS.LAYOUT_LEFT);
+    let base = s ? JSON.parse(s) : getDefaultLayout().left;
     if (!Array.isArray(base)) base = getDefaultLayout().left;
     else {
       base = base.filter((id) => id !== 'drinks' && id !== 'sport');
@@ -51,53 +51,165 @@ export function AppProvider({ children }) {
       if (!base.includes('sport')) base = [...base, 'sport'];
     }
     return base;
-  });
-  const [rightLayout, setRightLayout] = useState(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.LAYOUT_RIGHT);
-    const parsed = saved ? JSON.parse(saved) : null;
-    return migrateLayout(parsed, getDefaultLayout().right);
-  });
-  const [userName, setUserName] = useState(() => localStorage.getItem(STORAGE_KEYS.USERNAME) || 'Şampiyon');
-  const [lessons, setLessons] = useState(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.LESSONS);
-    return saved ? JSON.parse(saved) : [];
-  });
-  const [lessonTemplates, setLessonTemplates] = useState(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.LESSON_TEMPLATES);
-    return saved ? JSON.parse(saved) : [];
-  });
-  const [students, setStudents] = useState(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.STUDENTS);
-    return saved ? JSON.parse(saved) : [];
-  });
-  const [expenses, setExpenses] = useState(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.EXPENSES);
-    return saved ? JSON.parse(saved) : [];
-  });
-  const [waterLogs, setWaterLogs] = useState(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.WATER_LOGS);
-    return saved ? JSON.parse(saved) : {};
-  });
-  const [coffeeLogs, setCoffeeLogs] = useState(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.COFFEE_LOGS);
-    return saved ? JSON.parse(saved) : {};
-  });
-  const [workoutLogs, setWorkoutLogs] = useState(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.WORKOUT_LOGS);
-    return saved ? JSON.parse(saved) : [];
-  });
-  const [recipes, setRecipes] = useState(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.RECIPES);
-    return saved ? JSON.parse(saved) : [];
-  });
-  const [mealLogs, setMealLogs] = useState(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.MEAL_LOGS);
-    return saved ? JSON.parse(saved) : [];
-  });
+  })(),
+  rightLayout: (() => {
+    const s = localStorage.getItem(STORAGE_KEYS.LAYOUT_RIGHT);
+    return migrateLayout(s ? JSON.parse(s) : null, getDefaultLayout().right);
+  })(),
+  userName: localStorage.getItem(STORAGE_KEYS.USERNAME) || 'Şampiyon',
+  lessons: (() => {
+    const s = localStorage.getItem(STORAGE_KEYS.LESSONS);
+    return s ? JSON.parse(s) : [];
+  })(),
+  lessonTemplates: (() => {
+    const s = localStorage.getItem(STORAGE_KEYS.LESSON_TEMPLATES);
+    return s ? JSON.parse(s) : [];
+  })(),
+  students: (() => {
+    const s = localStorage.getItem(STORAGE_KEYS.STUDENTS);
+    return s ? JSON.parse(s) : [];
+  })(),
+  expenses: (() => {
+    const s = localStorage.getItem(STORAGE_KEYS.EXPENSES);
+    return s ? JSON.parse(s) : [];
+  })(),
+  waterLogs: (() => {
+    const s = localStorage.getItem(STORAGE_KEYS.WATER_LOGS);
+    return s ? JSON.parse(s) : {};
+  })(),
+  coffeeLogs: (() => {
+    const s = localStorage.getItem(STORAGE_KEYS.COFFEE_LOGS);
+    return s ? JSON.parse(s) : {};
+  })(),
+  workoutLogs: (() => {
+    const s = localStorage.getItem(STORAGE_KEYS.WORKOUT_LOGS);
+    return s ? JSON.parse(s) : [];
+  })(),
+  recipes: (() => {
+    const s = localStorage.getItem(STORAGE_KEYS.RECIPES);
+    return s ? JSON.parse(s) : [];
+  })(),
+  mealLogs: (() => {
+    const s = localStorage.getItem(STORAGE_KEYS.MEAL_LOGS);
+    return s ? JSON.parse(s) : [];
+  })(),
+});
+
+const AppContext = createContext(null);
+
+export function AppProvider({ children }) {
+  const stored = loadFromStorage();
+  const [theme, setTheme] = useState(stored.theme);
+  const [habits, setHabits] = useState(stored.habits);
+  const [tasks, setTasks] = useState(stored.tasks);
+  const [taskLogs, setTaskLogs] = useState(stored.taskLogs);
+  const [goals, setGoals] = useState(stored.goals);
+  const [userStats, setUserStats] = useState(stored.userStats);
+  const [leftLayout, setLeftLayout] = useState(stored.leftLayout);
+  const [rightLayout, setRightLayout] = useState(stored.rightLayout);
+  const [userName, setUserName] = useState(stored.userName);
+  const [lessons, setLessons] = useState(stored.lessons);
+  const [lessonTemplates, setLessonTemplates] = useState(stored.lessonTemplates);
+  const [students, setStudents] = useState(stored.students);
+  const [expenses, setExpenses] = useState(stored.expenses);
+  const [waterLogs, setWaterLogs] = useState(stored.waterLogs);
+  const [coffeeLogs, setCoffeeLogs] = useState(stored.coffeeLogs);
+  const [workoutLogs, setWorkoutLogs] = useState(stored.workoutLogs);
+  const [recipes, setRecipes] = useState(stored.recipes);
+  const [mealLogs, setMealLogs] = useState(stored.mealLogs);
   const [notification, setNotification] = useState(null);
   const [isImporting, setIsImporting] = useState(false);
+  const [syncStatus, setSyncStatus] = useState('idle'); // idle | loading | synced | error
+  const [syncError, setSyncError] = useState(null);
+  const pushTimeoutRef = useRef(null);
+  const initialFetchDone = useRef(false);
 
-  // Persist to localStorage
+  // Fetch from Neon on mount
+  useEffect(() => {
+    if (initialFetchDone.current) return;
+    initialFetchDone.current = true;
+    setSyncStatus('loading');
+    fetchSync()
+      .then((data) => {
+        if (data.user) {
+          if (data.user.userName) setUserName(data.user.userName);
+          if (data.user.theme) setTheme(data.user.theme);
+          if (data.user.xp != null) setUserStats((prev) => ({ ...prev, xp: data.user.xp }));
+          if (data.user.level != null) setUserStats((prev) => ({ ...prev, level: data.user.level }));
+          if (data.user.leftLayout?.length) setLeftLayout(data.user.leftLayout);
+          if (data.user.rightLayout?.length) setRightLayout(data.user.rightLayout);
+        }
+        if (Array.isArray(data.habits) && data.habits.length > 0) setHabits(data.habits);
+        if (Array.isArray(data.tasks)) setTasks(data.tasks);
+        if (Array.isArray(data.taskLogs)) setTaskLogs(data.taskLogs);
+        if (Array.isArray(data.goals)) setGoals(data.goals);
+        if (Array.isArray(data.lessons)) setLessons(data.lessons);
+        if (Array.isArray(data.lessonTemplates)) setLessonTemplates(data.lessonTemplates);
+        if (Array.isArray(data.students)) setStudents(data.students);
+        if (Array.isArray(data.expenses)) setExpenses(data.expenses);
+        if (data.waterLogs && typeof data.waterLogs === 'object') setWaterLogs(data.waterLogs);
+        if (data.coffeeLogs && typeof data.coffeeLogs === 'object') setCoffeeLogs(data.coffeeLogs);
+        if (Array.isArray(data.workoutLogs)) setWorkoutLogs(data.workoutLogs);
+        if (Array.isArray(data.recipes)) setRecipes(data.recipes);
+        if (Array.isArray(data.mealLogs)) setMealLogs(data.mealLogs);
+        setSyncStatus('synced');
+        setSyncError(null);
+      })
+      .catch((err) => {
+        setSyncStatus('error');
+        setSyncError(err.message);
+      });
+  }, []);
+
+  // Build sync payload
+  const getSyncPayload = useCallback(() => ({
+    userName,
+    theme,
+    userStats: { xp: userStats.xp, level: userStats.level },
+    leftLayout,
+    rightLayout,
+    habits,
+    tasks,
+    taskLogs,
+    goals,
+    lessons,
+    lessonTemplates,
+    students,
+    expenses,
+    waterLogs,
+    coffeeLogs,
+    workoutLogs,
+    recipes,
+    mealLogs,
+  }), [userName, theme, userStats, leftLayout, rightLayout, habits, tasks, taskLogs, goals, lessons, lessonTemplates, students, expenses, waterLogs, coffeeLogs, workoutLogs, recipes, mealLogs]);
+
+  // Debounced push to Neon
+  const schedulePush = useCallback(() => {
+    if (pushTimeoutRef.current) clearTimeout(pushTimeoutRef.current);
+    pushTimeoutRef.current = setTimeout(() => {
+      pushSync(getSyncPayload())
+        .then(() => {
+          setSyncStatus('synced');
+          setSyncError(null);
+        })
+        .catch((err) => {
+          setSyncStatus('error');
+          setSyncError(err.message);
+        });
+      pushTimeoutRef.current = null;
+    }, 1500);
+  }, [getSyncPayload]);
+
+  // Push to API when data changes (debounced)
+  useEffect(() => {
+    if (!initialFetchDone.current) return;
+    schedulePush();
+    return () => {
+      if (pushTimeoutRef.current) clearTimeout(pushTimeoutRef.current);
+    };
+  }, [habits, tasks, taskLogs, goals, lessons, lessonTemplates, students, expenses, waterLogs, coffeeLogs, workoutLogs, recipes, mealLogs, userName, theme, userStats, leftLayout, rightLayout, schedulePush]);
+
+  // Persist to localStorage (fallback / offline)
   useEffect(() => { localStorage.setItem(STORAGE_KEYS.THEME, theme); }, [theme]);
   useEffect(() => { localStorage.setItem(STORAGE_KEYS.HABITS, JSON.stringify(habits)); }, [habits]);
   useEffect(() => { localStorage.setItem(STORAGE_KEYS.TASKS, JSON.stringify(tasks)); }, [tasks]);
@@ -139,6 +251,13 @@ export function AppProvider({ children }) {
   }, []);
 
   const showNotification = useCallback((msg) => setNotification(msg), []);
+
+  const setDeviceId = useCallback((newId) => {
+    if (newId?.trim()) {
+      localStorage.setItem('life_dashboard_device_id', newId.trim());
+      window.location.reload();
+    }
+  }, []);
 
   const value = {
     theme,
@@ -183,6 +302,10 @@ export function AppProvider({ children }) {
     isImporting,
     setIsImporting,
     addXp,
+    syncStatus,
+    syncError,
+    deviceId: getDeviceId(),
+    setDeviceId,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

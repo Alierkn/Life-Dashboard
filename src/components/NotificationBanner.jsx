@@ -13,7 +13,7 @@ export default function NotificationBanner({ message, onDismiss }) {
       <span className="font-bold text-sm">{message}</span>
       <button
         onClick={onDismiss}
-        className="ml-2 hover:bg-red-200 dark:hover:bg-red-800 p-1 rounded-full focus:outline-none focus:ring-2 focus:ring-red-400"
+        className="ml-2 hover:bg-red-200 dark:hover:bg-red-800 p-2 min-w-[44px] min-h-[44px] rounded-full flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-red-400 touch-manipulation"
         aria-label="Bildirimi kapat"
       >
         <X className="w-4 h-4" />
