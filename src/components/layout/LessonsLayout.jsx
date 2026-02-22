@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import {
   GraduationCap,
   Plus,
@@ -50,9 +50,14 @@ export default function LessonsLayout({
   setStudents = () => {},
   expenses = [],
   setExpenses = () => {},
+  onMountRefetch,
 }) {
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
+
+  useEffect(() => {
+    onMountRefetch?.();
+  }, [onMountRefetch]);
   const [viewMode, setViewMode] = useState('calendar'); // 'calendar' | 'list'
   const [calendarDate, setCalendarDate] = useState(() => {
     const d = new Date();

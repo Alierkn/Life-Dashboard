@@ -222,7 +222,7 @@ export function AppProvider({ children }) {
   }, [getSyncPayload]);
 
   // Canlı senkronizasyon: periyodik polling + sekme görünür olduğunda hemen fetch
-  const POLL_INTERVAL_MS = 5_000; // 5 saniye - cihazlar arası anlık senkron
+  const POLL_INTERVAL_MS = 2_000; // 2 saniye - dersler/görevler anında senkron
   useEffect(() => {
     if (!initialFetchDone.current) return;
 
@@ -244,6 +244,7 @@ export function AppProvider({ children }) {
     };
 
     document.addEventListener('visibilitychange', onVisibilityChange);
+    if (document.visibilityState === 'visible') doFetch();
     const interval = setInterval(() => {
       if (document.visibilityState === 'visible') doFetch();
     }, POLL_INTERVAL_MS);
@@ -290,7 +291,7 @@ export function AppProvider({ children }) {
           setSyncError(err.message);
         });
       pushTimeoutRef.current = null;
-    }, 500);
+    }, 300);
   }, [getSyncPayload]);
 
   // Push to API when data changes (debounced)

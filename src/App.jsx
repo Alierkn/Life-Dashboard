@@ -705,6 +705,7 @@ function AppContent() {
           setStudents={setStudents}
           expenses={expenses}
           setExpenses={setExpenses}
+          onMountRefetch={refetchFromServer}
         />
       )}
     </div>
