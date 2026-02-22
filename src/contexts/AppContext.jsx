@@ -123,6 +123,7 @@ export function AppProvider({ children }) {
   const [syncError, setSyncError] = useState(null);
   const pushTimeoutRef = useRef(null);
   const initialFetchDone = useRef(false);
+  const initialFetchCompletedRef = useRef(false); // İlk fetch bitene kadar schedulePush çalışmasın
   const pendingPushRef = useRef(false); // Yerel değişiklik push edilene kadar sunucu verisiyle overwrite etme
 
   // Sunucudan gelen veriyi state'e uygula (tekrar kullanım için)
@@ -212,6 +213,7 @@ export function AppProvider({ children }) {
         }
         setSyncStatus('synced');
         setSyncError(null);
+        initialFetchCompletedRef.current = true;
       })
       .catch((err) => {
         setSyncStatus('error');
@@ -220,6 +222,7 @@ export function AppProvider({ children }) {
         if (hasLocalData) {
           pushSync(initialPayload).then(() => { setSyncStatus('synced'); setSyncError(null); }).catch(() => {});
         }
+        initialFetchCompletedRef.current = true;
       });
   }, []);
 
@@ -302,9 +305,9 @@ export function AppProvider({ children }) {
     }, 300);
   }, [getSyncPayload]);
 
-  // Push to API when data changes (debounced)
+  // Push to API when data changes (debounced) - ilk fetch bitene kadar bekle
   useEffect(() => {
-    if (!initialFetchDone.current) return;
+    if (!initialFetchCompletedRef.current) return;
     schedulePush();
     return () => {
       if (pushTimeoutRef.current) clearTimeout(pushTimeoutRef.current);
@@ -365,6 +368,10 @@ export function AppProvider({ children }) {
     setSyncStatus('loading');
     fetchSync()
       .then((data) => {
+        if (pendingPushRef.current) {
+          setSyncStatus('synced');
+          return; // Yerel değişiklik push edilmedi - overwrite etme
+        }
         applyServerData(data);
         setSyncStatus('synced');
         setSyncError(null);
