@@ -149,6 +149,28 @@ export function AppProvider({ children }) {
     if (Array.isArray(data.mealLogs)) setMealLogs(data.mealLogs);
   }, []);
 
+  // Build sync payload (önce tanımlanmalı - diğer effect'ler buna bağımlı)
+  const getSyncPayload = useCallback(() => ({
+    userName,
+    theme,
+    userStats: { xp: userStats.xp, level: userStats.level },
+    leftLayout,
+    rightLayout,
+    habits,
+    tasks,
+    taskLogs,
+    goals,
+    lessons,
+    lessonTemplates,
+    students,
+    expenses,
+    waterLogs,
+    coffeeLogs,
+    workoutLogs,
+    recipes,
+    mealLogs,
+  }), [userName, theme, userStats, leftLayout, rightLayout, habits, tasks, taskLogs, goals, lessons, lessonTemplates, students, expenses, waterLogs, coffeeLogs, workoutLogs, recipes, mealLogs]);
+
   // Fetch from Neon on mount
   useEffect(() => {
     if (initialFetchDone.current) return;
@@ -254,28 +276,6 @@ export function AppProvider({ children }) {
       clearInterval(interval);
     };
   }, [applyServerData]);
-
-  // Build sync payload
-  const getSyncPayload = useCallback(() => ({
-    userName,
-    theme,
-    userStats: { xp: userStats.xp, level: userStats.level },
-    leftLayout,
-    rightLayout,
-    habits,
-    tasks,
-    taskLogs,
-    goals,
-    lessons,
-    lessonTemplates,
-    students,
-    expenses,
-    waterLogs,
-    coffeeLogs,
-    workoutLogs,
-    recipes,
-    mealLogs,
-  }), [userName, theme, userStats, leftLayout, rightLayout, habits, tasks, taskLogs, goals, lessons, lessonTemplates, students, expenses, waterLogs, coffeeLogs, workoutLogs, recipes, mealLogs]);
 
   // Debounced push to Neon
   const schedulePush = useCallback(() => {

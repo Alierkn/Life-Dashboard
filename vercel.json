@@ -2,7 +2,8 @@
   "rewrites": [
     { "source": "/api/:path*", "destination": "/api/:path*" },
     {
-      "source": "/((?!.*\\.(js|css|png|jpg|jpeg|gif|svg|ico|woff2?|eot|ttf|otf|webp)$).*)",
+      "source": "/(.*)",
+      "has": [{ "type": "header", "key": "accept", "value": "text/html" }],
       "destination": "/index.html"
     }
   ]
