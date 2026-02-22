@@ -242,6 +242,7 @@ export default function LessonsLayout({
   const currentMonthKey = `${calendarDate.year}-${String(calendarDate.month).padStart(2, '0')}`;
   const thisMonthEarnings = monthlyEarnings[currentMonthKey] || 0;
   const totalEarnings = Object.values(monthlyEarnings).reduce((a, b) => a + b, 0);
+  const hasLessonsWithFee = safeLessons.some((l) => !l.cancelled && l.fee);
 
   const { rate: tryToEurRate } = useExchangeRate();
   const thisMonthEur = tryToEurRate ? (thisMonthEarnings * tryToEurRate).toFixed(2) : null;
@@ -352,20 +353,26 @@ export default function LessonsLayout({
             <TrendingUp className="w-5 h-5" />
             Aylık Kazanç
           </h3>
-          <p className="text-2xl font-black text-emerald-700 dark:text-emerald-200">
-            {thisMonthEarnings.toLocaleString('tr-TR')} ₺
-          </p>
-          {thisMonthEur != null && (
-            <p className="text-sm font-bold text-emerald-600 dark:text-emerald-400 mt-0.5">
-              ≈ {Number(thisMonthEur).toLocaleString('tr-TR')} €
-            </p>
+          {hasLessonsWithFee ? (
+            <>
+              <p className="text-2xl font-black text-emerald-700 dark:text-emerald-200">
+                {thisMonthEarnings.toLocaleString('tr-TR')} ₺
+              </p>
+              {thisMonthEur != null && (
+                <p className="text-sm font-bold text-emerald-600 dark:text-emerald-400 mt-0.5">
+                  ≈ {Number(thisMonthEur).toLocaleString('tr-TR')} €
+                </p>
+              )}
+              <p className="text-xs text-emerald-600 dark:text-emerald-400 mt-1">
+                {MONTH_NAMES[calendarDate.month - 1]} {calendarDate.year} • Toplam: {totalEarnings.toLocaleString('tr-TR')} ₺
+                {totalEur != null && (
+                  <span className="ml-1">(≈ {Number(totalEur).toLocaleString('tr-TR')} €)</span>
+                )}
+              </p>
+            </>
+          ) : (
+            <p className="text-slate-500 dark:text-slate-400 font-medium">Henüz ücretli ders yok</p>
           )}
-          <p className="text-xs text-emerald-600 dark:text-emerald-400 mt-1">
-            {MONTH_NAMES[calendarDate.month - 1]} {calendarDate.year} • Toplam: {totalEarnings.toLocaleString('tr-TR')} ₺
-            {totalEur != null && (
-              <span className="ml-1">(≈ {Number(totalEur).toLocaleString('tr-TR')} €)</span>
-            )}
-          </p>
         </div>
         <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800">
           <h3 className="font-bold text-slate-700 dark:text-slate-300 flex items-center gap-2 mb-2">

@@ -176,8 +176,8 @@ export function AppProvider({ children }) {
     };
     fetchSync()
       .then((data) => {
-        const serverHadData = (data.habits?.length || data.tasks?.length || data.lessons?.length || data.lessonTemplates?.length || data.students?.length || Object.keys(data.waterLogs || {}).length || Object.keys(data.coffeeLogs || {}).length || data.workoutLogs?.length || data.recipes?.length || data.mealLogs?.length || data.goals?.length) > 0;
-        const hasLocalData = (initialPayload.habits?.length || initialPayload.tasks?.length || initialPayload.lessons?.length || initialPayload.lessonTemplates?.length || initialPayload.students?.length || Object.keys(initialPayload.waterLogs || {}).length || Object.keys(initialPayload.coffeeLogs || {}).length || initialPayload.workoutLogs?.length || initialPayload.recipes?.length || initialPayload.mealLogs?.length || initialPayload.goals?.length) > 0;
+        const serverHadData = (data.habits?.length || data.tasks?.length || data.lessons?.length || data.lessonTemplates?.length || data.students?.length || data.expenses?.length || Object.keys(data.waterLogs || {}).length || Object.keys(data.coffeeLogs || {}).length || data.workoutLogs?.length || data.recipes?.length || data.mealLogs?.length || data.goals?.length) > 0;
+        const hasLocalData = (initialPayload.habits?.length || initialPayload.tasks?.length || initialPayload.lessons?.length || initialPayload.lessonTemplates?.length || initialPayload.students?.length || initialPayload.expenses?.length || Object.keys(initialPayload.waterLogs || {}).length || Object.keys(initialPayload.coffeeLogs || {}).length || initialPayload.workoutLogs?.length || initialPayload.recipes?.length || initialPayload.mealLogs?.length || initialPayload.goals?.length) > 0;
 
         if (serverHadData) {
           applyServerData(data);
@@ -193,7 +193,7 @@ export function AppProvider({ children }) {
       .catch((err) => {
         setSyncStatus('error');
         setSyncError(err.message);
-        const hasLocalData = initialPayload.habits?.length || initialPayload.tasks?.length || initialPayload.lessons?.length || initialPayload.lessonTemplates?.length || initialPayload.students?.length;
+        const hasLocalData = initialPayload.habits?.length || initialPayload.tasks?.length || initialPayload.lessons?.length || initialPayload.lessonTemplates?.length || initialPayload.students?.length || initialPayload.expenses?.length;
         if (hasLocalData) {
           pushSync(initialPayload).then(() => { setSyncStatus('synced'); setSyncError(null); }).catch(() => {});
         }
@@ -229,7 +229,7 @@ export function AppProvider({ children }) {
     const doFetch = () => {
       fetchSync()
         .then((data) => {
-          const serverHadData = (data.habits?.length || data.tasks?.length || data.lessons?.length || data.lessonTemplates?.length || data.students?.length || Object.keys(data.waterLogs || {}).length || Object.keys(data.coffeeLogs || {}).length || data.workoutLogs?.length || data.recipes?.length || data.mealLogs?.length || data.goals?.length) > 0;
+          const serverHadData = (data.habits?.length || data.tasks?.length || data.lessons?.length || data.lessonTemplates?.length || data.students?.length || data.expenses?.length || Object.keys(data.waterLogs || {}).length || Object.keys(data.coffeeLogs || {}).length || data.workoutLogs?.length || data.recipes?.length || data.mealLogs?.length || data.goals?.length) > 0;
           if (serverHadData) {
             applyServerData(data);
           }
