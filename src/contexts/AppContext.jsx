@@ -123,6 +123,7 @@ export function AppProvider({ children }) {
   const [syncError, setSyncError] = useState(null);
   const pushTimeoutRef = useRef(null);
   const initialFetchDone = useRef(false);
+  const pendingPushRef = useRef(false); // Yerel değişiklik push edilene kadar sunucu verisiyle overwrite etme
 
   // Sunucudan gelen veriyi state'e uygula (tekrar kullanım için)
   const applyServerData = useCallback((data) => {
@@ -229,7 +230,10 @@ export function AppProvider({ children }) {
         clearTimeout(pushTimeoutRef.current);
         pushTimeoutRef.current = null;
       }
-      pushSync(getSyncPayload()).catch(() => {});
+      pendingPushRef.current = true;
+      pushSync(getSyncPayload())
+        .then(() => { pendingPushRef.current = false; })
+        .catch(() => { pendingPushRef.current = false; });
     };
     const onVisibilityChange = () => {
       if (document.visibilityState === 'hidden') onHide();
@@ -251,6 +255,7 @@ export function AppProvider({ children }) {
     const doFetch = () => {
       fetchSync()
         .then((data) => {
+          if (pendingPushRef.current) return; // Yerel değişiklik henüz push edilmedi - overwrite etme!
           const serverHadData = (data.habits?.length || data.tasks?.length || data.lessons?.length || data.lessonTemplates?.length || data.students?.length || data.expenses?.length || Object.keys(data.waterLogs || {}).length || Object.keys(data.coffeeLogs || {}).length || data.workoutLogs?.length || data.recipes?.length || data.mealLogs?.length || data.goals?.length) > 0;
           if (serverHadData) {
             applyServerData(data);
@@ -279,14 +284,17 @@ export function AppProvider({ children }) {
 
   // Debounced push to Neon
   const schedulePush = useCallback(() => {
+    pendingPushRef.current = true;
     if (pushTimeoutRef.current) clearTimeout(pushTimeoutRef.current);
     pushTimeoutRef.current = setTimeout(() => {
       pushSync(getSyncPayload())
         .then(() => {
+          pendingPushRef.current = false;
           setSyncStatus('synced');
           setSyncError(null);
         })
         .catch((err) => {
+          pendingPushRef.current = false;
           setSyncStatus('error');
           setSyncError(err.message);
         });
