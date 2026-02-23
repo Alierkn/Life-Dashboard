@@ -1,3 +1,6 @@
+/** Sync uyumlu UUID - sunucu ID'yi korur, sonsuz sync döngüsünü önler */
+export const generateId = () => crypto.randomUUID?.() || `x${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
+
 export const STORAGE_KEYS = {
   THEME: 'my_theme_v5',
   HABITS: 'my_habits_v5',

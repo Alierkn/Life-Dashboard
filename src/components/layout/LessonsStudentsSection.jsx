@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Plus, Trash2, Edit, User, Phone, Mail, Users } from 'lucide-react';
+import { generateId } from '../../constants';
 
 export default function LessonsStudentsSection({ students, setStudents }) {
   const [showForm, setShowForm] = useState(false);
@@ -24,7 +25,7 @@ export default function LessonsStudentsSection({ students, setStudents }) {
     if (!formData.name.trim()) return;
 
     const student = {
-      id: editingId ?? Date.now(),
+      id: editingId ?? generateId(),
       name: formData.name.trim(),
       phone: formData.phone.trim() || '',
       email: formData.email.trim() || '',

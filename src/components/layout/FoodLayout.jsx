@@ -11,7 +11,7 @@ import {
   ChevronUp,
 } from 'lucide-react';
 import { getTodayString } from '../../utils/date';
-import { MEAL_TYPES } from '../../constants';
+import { MEAL_TYPES, generateId } from '../../constants';
 
 export default function FoodLayout({ recipes, setRecipes, mealLogs, setMealLogs }) {
   const [activeTab, setActiveTab] = useState('meals');
@@ -76,15 +76,15 @@ function MealsSection({ mealLogs, setMealLogs, recipes, todayStr }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!formData.description.trim()) return;
-    const recipe = formData.recipeId ? recipes.find((r) => r.id === Number(formData.recipeId)) : null;
+    const recipe = formData.recipeId ? recipes.find((r) => String(r.id) === String(formData.recipeId)) : null;
     setMealLogs((prev) => [
       ...prev,
       {
-        id: Date.now(),
+        id: generateId(),
         date: selectedDate,
         mealType: formData.mealType,
         description: formData.description.trim(),
-        recipeId: formData.recipeId ? Number(formData.recipeId) : null,
+        recipeId: formData.recipeId || null,
         recipeTitle: recipe?.title,
       },
     ]);
@@ -149,7 +149,7 @@ function MealsSection({ mealLogs, setMealLogs, recipes, todayStr }) {
               <select
                 value={formData.recipeId}
                 onChange={(e) => {
-                  const r = recipes.find((rec) => rec.id === Number(e.target.value));
+                  const r = recipes.find((rec) => String(rec.id) === String(e.target.value));
                   setFormData({
                     ...formData,
                     recipeId: e.target.value,
@@ -228,7 +228,7 @@ function RecipesSection({ recipes, setRecipes }) {
     e.preventDefault();
     if (!formData.title.trim()) return;
     const recipe = {
-      id: editingId || Date.now(),
+      id: editingId || generateId(),
       title: formData.title.trim(),
       ingredients: formData.ingredients.trim().split('\n').filter(Boolean),
       instructions: formData.instructions.trim().split('\n').filter(Boolean),

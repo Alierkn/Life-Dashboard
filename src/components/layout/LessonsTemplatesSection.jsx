@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Plus, Trash2, Edit, Calendar, Clock, User, BookOpen } from 'lucide-react';
 import { getMondayOfWeek } from '../../utils/date';
-import { LESSON_DURATION_OPTIONS } from '../../constants';
+import { LESSON_DURATION_OPTIONS, generateId } from '../../constants';
 
 const DAY_OPTIONS = ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi', 'Pazar'];
 
@@ -39,7 +39,7 @@ export default function LessonsTemplatesSection({ templates, setTemplates, onGen
     if (!formData.studentName.trim() || !formData.subject.trim()) return;
 
     const template = {
-      id: editingId ?? Date.now(),
+      id: editingId ?? generateId(),
       studentName: formData.studentName.trim(),
       subject: formData.subject.trim(),
       day: formData.day,
@@ -92,7 +92,7 @@ export default function LessonsTemplatesSection({ templates, setTemplates, onGen
         const lessonDate = new Date(weekMonday);
         lessonDate.setDate(lessonDate.getDate() + offset);
         lessons.push({
-          id: Date.now() + w * 100000 + idx,
+          id: generateId(),
           studentName: t.studentName,
           subject: t.subject,
           date: lessonDate.toISOString().split('T')[0],

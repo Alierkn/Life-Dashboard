@@ -27,7 +27,7 @@ import { getTodayString, getMondayOfWeek } from '../../utils/date';
 import { getMonthCalendar, DAY_NAMES, MONTH_NAMES } from '../../utils/date';
 import { parseCSV, parseExcel, rowsToLessons } from '../../utils/weeklyPlanParser';
 import { useExchangeRate } from '../../hooks/useExchangeRate';
-import { LESSON_DURATION_OPTIONS } from '../../constants';
+import { LESSON_DURATION_OPTIONS, generateId } from '../../constants';
 import LessonsTemplatesSection from './LessonsTemplatesSection';
 import LessonsStudentsSection from './LessonsStudentsSection';
 import LessonsFinanceSection from './LessonsFinanceSection';
@@ -97,7 +97,7 @@ export default function LessonsLayout({
 
     const existing = editingId ? lessons.find((l) => l.id === editingId) : null;
     const lesson = ensureLessonFields({
-      id: editingId ?? Date.now(),
+      id: editingId ?? generateId(),
       studentName: formData.studentName.trim(),
       subject: formData.subject.trim(),
       date: formData.date,
@@ -206,7 +206,7 @@ export default function LessonsLayout({
           allLessons.push(
             ensureLessonFields({
               ...l,
-              id: Date.now() + w * 100000 + idx,
+              id: generateId(),
               createdAt: new Date().toISOString(),
             })
           )

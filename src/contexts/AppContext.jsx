@@ -126,9 +126,11 @@ export function AppProvider({ children }) {
   const initialFetchCompletedRef = useRef(false);
   const pendingPushRef = useRef(false);
   const skipNextApplyRef = useRef(false); // Push tamamlandı - bir sonraki poll eski veri dönebilir, apply atla
+  const justAppliedServerDataRef = useRef(false); // Sunucudan apply sonrası - gereksiz push yapma
 
   // Sunucudan gelen veriyi state'e uygula
   const applyServerData = useCallback((data) => {
+    justAppliedServerDataRef.current = true;
     if (data.user) {
       if (data.user.userName) setUserName(data.user.userName);
       if (data.user.theme) setTheme(data.user.theme);
@@ -266,7 +268,7 @@ export function AppProvider({ children }) {
   }, [getSyncPayload]);
 
   // Canlı senkronizasyon: periyodik polling + sekme görünür olduğunda hemen fetch
-  const POLL_INTERVAL_MS = 2_000; // 2 saniye - dersler/görevler anında senkron
+  const POLL_INTERVAL_MS = 30_000; // 30 saniye - agresif polling sonsuz sync döngüsüne yol açıyordu
   useEffect(() => {
     if (!initialFetchDone.current) return;
 
@@ -328,6 +330,10 @@ export function AppProvider({ children }) {
   // Veri degistiginde push - ilk fetch tamamlanana kadar bekle
   useEffect(() => {
           if (!initialFetchCompletedRef.current) return;
+          if (justAppliedServerDataRef.current) {
+            justAppliedServerDataRef.current = false;
+            return; // Sunucudan apply - gereksiz push yapma (döngü önleme)
+          }
           schedulePush();
           return () => { if (pushTimeoutRef.current) clearTimeout(pushTimeoutRef.current); };
   }, [habits, tasks, taskLogs, goals, lessons, lessonTemplates, students, expenses,

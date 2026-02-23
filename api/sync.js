@@ -2,6 +2,13 @@ import { sql } from './db.js';
 import { getDeviceId } from './lib/device.js';
 import { getOrCreateUser, updateUser } from './lib/user.js';
 
+/** Geçerli UUID string mi kontrol et - client ID'sini korumak için */
+const isValidUuid = (v) => {
+  if (v == null) return false;
+  const s = String(v).trim();
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(s);
+};
+
 /** Map frontend format to DB format and vice versa */
 const toDbHabit = (h, userId) => ({
   id: h.id,
@@ -218,10 +225,13 @@ export default async function handler(req, res) {
       if (Array.isArray(body.habits)) {
         for (const h of body.habits) {
           const d = toDbHabit(h, userId);
-          await sql`
-            INSERT INTO habits (user_id, title, frequency, streak, target_period, completed_dates)
-            VALUES (${userId}, ${d.title}, ${d.frequency}, ${d.streak}, ${d.target_period}, ${d.completed_dates}::jsonb)
-          `;
+          if (isValidUuid(h.id)) {
+            await sql`INSERT INTO habits (id, user_id, title, frequency, streak, target_period, completed_dates)
+              VALUES (${h.id}, ${userId}, ${d.title}, ${d.frequency}, ${d.streak}, ${d.target_period}, ${d.completed_dates}::jsonb)`;
+          } else {
+            await sql`INSERT INTO habits (user_id, title, frequency, streak, target_period, completed_dates)
+              VALUES (${userId}, ${d.title}, ${d.frequency}, ${d.streak}, ${d.target_period}, ${d.completed_dates}::jsonb)`;
+          }
         }
       }
 
@@ -229,10 +239,13 @@ export default async function handler(req, res) {
       if (Array.isArray(body.tasks)) {
         for (const t of body.tasks) {
           const d = toDbTask(t, userId);
-          await sql`
-            INSERT INTO tasks (user_id, text, completed, tag, priority, repeat, subtasks)
-            VALUES (${userId}, ${d.text}, ${d.completed}, ${d.tag}, ${d.priority}, ${d.repeat}, ${d.subtasks}::jsonb)
-          `;
+          if (isValidUuid(t.id)) {
+            await sql`INSERT INTO tasks (id, user_id, text, completed, tag, priority, repeat, subtasks)
+              VALUES (${t.id}, ${userId}, ${d.text}, ${d.completed}, ${d.tag}, ${d.priority}, ${d.repeat}, ${d.subtasks}::jsonb)`;
+          } else {
+            await sql`INSERT INTO tasks (user_id, text, completed, tag, priority, repeat, subtasks)
+              VALUES (${userId}, ${d.text}, ${d.completed}, ${d.tag}, ${d.priority}, ${d.repeat}, ${d.subtasks}::jsonb)`;
+          }
         }
       }
 
@@ -240,10 +253,13 @@ export default async function handler(req, res) {
       if (Array.isArray(body.goals)) {
         for (const g of body.goals) {
           const d = toDbGoal(g, userId);
-          await sql`
-            INSERT INTO goals (user_id, title, current, target, unit)
-            VALUES (${userId}, ${d.title}, ${d.current}, ${d.target}, ${d.unit})
-          `;
+          if (isValidUuid(g.id)) {
+            await sql`INSERT INTO goals (id, user_id, title, current, target, unit)
+              VALUES (${g.id}, ${userId}, ${d.title}, ${d.current}, ${d.target}, ${d.unit})`;
+          } else {
+            await sql`INSERT INTO goals (user_id, title, current, target, unit)
+              VALUES (${userId}, ${d.title}, ${d.current}, ${d.target}, ${d.unit})`;
+          }
         }
       }
 
@@ -262,40 +278,54 @@ export default async function handler(req, res) {
       await sql`DELETE FROM lessons WHERE user_id = ${userId}`;
       if (Array.isArray(body.lessons)) {
         for (const l of body.lessons) {
-          await sql`
-            INSERT INTO lessons (user_id, date, student_name, subject, time, duration, fee, notes, cancelled, payment_done, parent_informed, student_attended, post_lesson_notes)
-            VALUES (${userId}, ${l.date}, ${l.studentName}, ${l.subject}, ${l.time || '14:00'}, ${l.duration || 60}, ${l.fee ? parseInt(String(l.fee).replace(/\D/g, ''), 10) : null}, ${l.notes || ''}, ${!!l.cancelled}, ${!!l.paymentDone}, ${!!l.parentInformed}, ${!!l.studentAttended}, ${l.postLessonNotes || ''})
-          `;
+          const feeVal = l.fee ? parseInt(String(l.fee).replace(/\D/g, ''), 10) : null;
+          if (isValidUuid(l.id)) {
+            await sql`INSERT INTO lessons (id, user_id, date, student_name, subject, time, duration, fee, notes, cancelled, payment_done, parent_informed, student_attended, post_lesson_notes)
+              VALUES (${l.id}, ${userId}, ${l.date}, ${l.studentName}, ${l.subject}, ${l.time || '14:00'}, ${l.duration || 60}, ${feeVal}, ${l.notes || ''}, ${!!l.cancelled}, ${!!l.paymentDone}, ${!!l.parentInformed}, ${!!l.studentAttended}, ${l.postLessonNotes || ''})`;
+          } else {
+            await sql`INSERT INTO lessons (user_id, date, student_name, subject, time, duration, fee, notes, cancelled, payment_done, parent_informed, student_attended, post_lesson_notes)
+              VALUES (${userId}, ${l.date}, ${l.studentName}, ${l.subject}, ${l.time || '14:00'}, ${l.duration || 60}, ${feeVal}, ${l.notes || ''}, ${!!l.cancelled}, ${!!l.paymentDone}, ${!!l.parentInformed}, ${!!l.studentAttended}, ${l.postLessonNotes || ''})`;
+          }
         }
       }
 
       await sql`DELETE FROM lesson_templates WHERE user_id = ${userId}`;
       if (Array.isArray(body.lessonTemplates)) {
         for (const t of body.lessonTemplates) {
-          await sql`
-            INSERT INTO lesson_templates (user_id, student_name, subject, day, time, duration, fee, notes)
-            VALUES (${userId}, ${t.studentName}, ${t.subject}, ${t.day || 'Pazartesi'}, ${t.time || '14:00'}, ${t.duration || 60}, ${t.fee ? parseInt(String(t.fee).replace(/\D/g, ''), 10) : null}, ${t.notes || ''})
-          `;
+          const feeVal = t.fee ? parseInt(String(t.fee).replace(/\D/g, ''), 10) : null;
+          if (isValidUuid(t.id)) {
+            await sql`INSERT INTO lesson_templates (id, user_id, student_name, subject, day, time, duration, fee, notes)
+              VALUES (${t.id}, ${userId}, ${t.studentName}, ${t.subject}, ${t.day || 'Pazartesi'}, ${t.time || '14:00'}, ${t.duration || 60}, ${feeVal}, ${t.notes || ''})`;
+          } else {
+            await sql`INSERT INTO lesson_templates (user_id, student_name, subject, day, time, duration, fee, notes)
+              VALUES (${userId}, ${t.studentName}, ${t.subject}, ${t.day || 'Pazartesi'}, ${t.time || '14:00'}, ${t.duration || 60}, ${feeVal}, ${t.notes || ''})`;
+          }
         }
       }
 
       await sql`DELETE FROM students WHERE user_id = ${userId}`;
       if (Array.isArray(body.students)) {
         for (const s of body.students) {
-          await sql`
-            INSERT INTO students (user_id, name, phone, email, parent_name, parent_phone, notes)
-            VALUES (${userId}, ${s.name}, ${s.phone || ''}, ${s.email || ''}, ${s.parentName || ''}, ${s.parentPhone || ''}, ${s.notes || ''})
-          `;
+          if (isValidUuid(s.id)) {
+            await sql`INSERT INTO students (id, user_id, name, phone, email, parent_name, parent_phone, notes)
+              VALUES (${s.id}, ${userId}, ${s.name}, ${s.phone || ''}, ${s.email || ''}, ${s.parentName || ''}, ${s.parentPhone || ''}, ${s.notes || ''})`;
+          } else {
+            await sql`INSERT INTO students (user_id, name, phone, email, parent_name, parent_phone, notes)
+              VALUES (${userId}, ${s.name}, ${s.phone || ''}, ${s.email || ''}, ${s.parentName || ''}, ${s.parentPhone || ''}, ${s.notes || ''})`;
+          }
         }
       }
 
       await sql`DELETE FROM expenses WHERE user_id = ${userId}`;
       if (Array.isArray(body.expenses)) {
         for (const e of body.expenses) {
-          await sql`
-            INSERT INTO expenses (user_id, date, category, amount, description)
-            VALUES (${userId}, ${e.date}, ${e.category}, ${e.amount}, ${e.description || ''})
-          `;
+          if (isValidUuid(e.id)) {
+            await sql`INSERT INTO expenses (id, user_id, date, category, amount, description)
+              VALUES (${e.id}, ${userId}, ${e.date}, ${e.category}, ${e.amount}, ${e.description || ''})`;
+          } else {
+            await sql`INSERT INTO expenses (user_id, date, category, amount, description)
+              VALUES (${userId}, ${e.date}, ${e.category}, ${e.amount}, ${e.description || ''})`;
+          }
         }
       }
 
@@ -320,30 +350,40 @@ export default async function handler(req, res) {
       await sql`DELETE FROM workout_logs WHERE user_id = ${userId}`;
       if (Array.isArray(body.workoutLogs)) {
         for (const w of body.workoutLogs) {
-          await sql`
-            INSERT INTO workout_logs (user_id, date, type, duration, notes)
-            VALUES (${userId}, ${w.date}, ${w.type}, ${w.duration || 30}, ${w.notes || ''})
-          `;
+          if (isValidUuid(w.id)) {
+            await sql`INSERT INTO workout_logs (id, user_id, date, type, duration, notes)
+              VALUES (${w.id}, ${userId}, ${w.date}, ${w.type}, ${w.duration || 30}, ${w.notes || ''})`;
+          } else {
+            await sql`INSERT INTO workout_logs (user_id, date, type, duration, notes)
+              VALUES (${userId}, ${w.date}, ${w.type}, ${w.duration || 30}, ${w.notes || ''})`;
+          }
         }
       }
 
       await sql`DELETE FROM recipes WHERE user_id = ${userId}`;
       if (Array.isArray(body.recipes)) {
         for (const r of body.recipes) {
-          await sql`
-            INSERT INTO recipes (user_id, title, ingredients, instructions, prep_time, cook_time, servings, category)
-            VALUES (${userId}, ${r.title}, ${JSON.stringify(r.ingredients || [])}::jsonb, ${JSON.stringify(r.instructions || [])}::jsonb, ${r.prepTime || null}, ${r.cookTime || null}, ${r.servings || null}, ${r.category || null})
-          `;
+          if (isValidUuid(r.id)) {
+            await sql`INSERT INTO recipes (id, user_id, title, ingredients, instructions, prep_time, cook_time, servings, category)
+              VALUES (${r.id}, ${userId}, ${r.title}, ${JSON.stringify(r.ingredients || [])}::jsonb, ${JSON.stringify(r.instructions || [])}::jsonb, ${r.prepTime || null}, ${r.cookTime || null}, ${r.servings || null}, ${r.category || null})`;
+          } else {
+            await sql`INSERT INTO recipes (user_id, title, ingredients, instructions, prep_time, cook_time, servings, category)
+              VALUES (${userId}, ${r.title}, ${JSON.stringify(r.ingredients || [])}::jsonb, ${JSON.stringify(r.instructions || [])}::jsonb, ${r.prepTime || null}, ${r.cookTime || null}, ${r.servings || null}, ${r.category || null})`;
+          }
         }
       }
 
       await sql`DELETE FROM meal_logs WHERE user_id = ${userId}`;
       if (Array.isArray(body.mealLogs)) {
         for (const m of body.mealLogs) {
-          await sql`
-            INSERT INTO meal_logs (user_id, date, meal_type, description, recipe_id)
-            VALUES (${userId}, ${m.date}, ${m.mealType}, ${m.description}, ${m.recipeId || null})
-          `;
+          const recipeIdVal = isValidUuid(m.recipeId) ? m.recipeId : null;
+          if (isValidUuid(m.id)) {
+            await sql`INSERT INTO meal_logs (id, user_id, date, meal_type, description, recipe_id)
+              VALUES (${m.id}, ${userId}, ${m.date}, ${m.mealType}, ${m.description}, ${recipeIdVal})`;
+          } else {
+            await sql`INSERT INTO meal_logs (user_id, date, meal_type, description, recipe_id)
+              VALUES (${userId}, ${m.date}, ${m.mealType}, ${m.description}, ${recipeIdVal})`;
+          }
         }
       }
 

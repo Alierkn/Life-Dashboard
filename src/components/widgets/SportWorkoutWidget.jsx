@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Dumbbell, Plus, Trash2, Clock } from 'lucide-react';
 import { getTodayString, getPastDays } from '../../utils/date';
-import { WORKOUT_TYPES } from '../../constants';
+import { WORKOUT_TYPES, generateId } from '../../constants';
 
 export default function SportWorkoutWidget({ workoutLogs, setWorkoutLogs }) {
   const [showForm, setShowForm] = useState(false);
@@ -23,7 +23,7 @@ export default function SportWorkoutWidget({ workoutLogs, setWorkoutLogs }) {
     setWorkoutLogs((prev) => [
       ...prev,
       {
-        id: Date.now(),
+        id: generateId(),
         type: formData.type,
         duration: Number(formData.duration) || 30,
         date: formData.date,

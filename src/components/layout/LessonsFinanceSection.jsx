@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Plus, Trash2, TrendingUp, TrendingDown, FileSpreadsheet, FileText } from 'lucide-react';
+import { generateId } from '../../constants';
 import * as XLSX from 'xlsx';
 import { MONTH_NAMES } from '../../utils/date';
 import { useExchangeRate } from '../../hooks/useExchangeRate';
@@ -59,7 +60,7 @@ export default function LessonsFinanceSection({ lessons, expenses, setExpenses, 
     setExpenses((prev) => [
       ...prev,
       {
-        id: Date.now(),
+        id: generateId(),
         date: expenseForm.date,
         category: expenseForm.category,
         amount,

@@ -6,7 +6,7 @@ import { validateImportData } from './utils/importValidation';
 import { usePenaltyCheck } from './hooks/usePenaltyCheck';
 import { useAITip } from './hooks/useAITip';
 import { useTimer } from './hooks/useTimer';
-import { XP } from './constants';
+import { XP, generateId } from './constants';
 import Header from './components/Header';
 import NotificationBanner from './components/NotificationBanner';
 import MobileNav from './components/MobileNav';
@@ -185,7 +185,7 @@ function AppContent() {
             setTaskLogs((prev) => [...prev, getTodayString()]);
             if (task.repeat && task.repeat !== 'none') {
               newTaskToAdd = {
-                id: Date.now() + 1,
+                id: generateId(),
                 text: task.text,
                 completed: false,
                 tag: task.tag,
@@ -244,7 +244,7 @@ function AppContent() {
     setTasks((prev) =>
       prev.map((t) => {
         if (t.id !== taskId) return t;
-        const subs = [...(t.subtasks || []), { id: Date.now(), text: text.trim(), completed: false }];
+        const subs = [...(t.subtasks || []), { id: generateId(), text: text.trim(), completed: false }];
         return { ...t, subtasks: subs };
       })
     );
@@ -266,7 +266,7 @@ function AppContent() {
     setHabits((prev) => [
       ...prev,
       {
-        id: Date.now(),
+        id: generateId(),
         title: newHabitTitle,
         streak: 0,
         frequency: newHabitFreq,
@@ -286,7 +286,7 @@ function AppContent() {
     setTasks((prev) => [
       ...prev,
       {
-        id: Date.now(),
+        id: generateId(),
         text: newTaskTitle,
         completed: false,
         tag: newTaskTag,
@@ -307,7 +307,7 @@ function AppContent() {
     setGoals((prev) => [
       ...prev,
       {
-        id: Date.now(),
+        id: generateId(),
         title: newGoalData.title,
         current: 0,
         target: Number(newGoalData.target),
