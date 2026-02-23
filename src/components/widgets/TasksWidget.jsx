@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Check, Plus, Trash2, BookOpen, Eye, EyeOff, ChevronDown, ChevronUp } from 'lucide-react';
 import { TASK_TAGS, TASK_REPEAT_OPTIONS } from '../../constants';
+import { sanitize } from '../../utils/sanitize';
 
 const PRIORITY_ORDER = { high: 0, medium: 1, low: 2 };
 
@@ -192,12 +193,12 @@ export default function TasksWidget({
                 </button>
                 <div className="flex-1 flex flex-col min-w-0">
                   <span className={`text-sm font-bold ${isCompleted ? 'text-slate-400 dark:text-slate-600 line-through' : 'text-slate-800 dark:text-slate-200'}`}>
-                    {task.text}
+                    {sanitize(task.text)}
                   </span>
                   <div className="flex gap-1 mt-1 flex-wrap items-center">
                     {task.tag && (
                       <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 uppercase">
-                        {task.tag}
+                        {sanitize(task.tag)}
                       </span>
                     )}
                     {task.priority === 'high' && (
@@ -245,7 +246,7 @@ export default function TasksWidget({
                       >
                         {s.completed && <Check className="w-2.5 h-2.5 text-white stroke-[3]" />}
                       </button>
-                      <span className={`text-xs flex-1 ${s.completed ? 'line-through text-slate-400' : ''}`}>{s.text}</span>
+                      <span className={`text-xs flex-1 ${s.completed ? 'line-through text-slate-400' : ''}`}>{sanitize(s.text)}</span>
                       <button
                         onClick={() => onDeleteSubtask?.(task.id, s.id)}
                         className="p-2 min-w-[36px] min-h-[36px] flex items-center justify-center text-slate-400 hover:text-red-500 touch-manipulation"

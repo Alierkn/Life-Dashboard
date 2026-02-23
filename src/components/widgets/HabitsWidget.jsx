@@ -1,6 +1,7 @@
 import { Check, Plus, Trash2, Flame, Target, ChevronDown, ChevronUp, TrendingUp } from 'lucide-react';
 import { getFrequencyLabel } from '../../utils/helpers';
 import { FREQUENCY_OPTIONS } from '../../constants';
+import { sanitize } from '../../utils/sanitize';
 
 export default function HabitsWidget({
   habits,
@@ -115,7 +116,7 @@ export default function HabitsWidget({
                   </button>
                   <div className="flex flex-col flex-1">
                     <h4 className={`font-bold text-lg leading-tight ${isTodayCompleted ? 'text-green-800 dark:text-green-400' : 'text-slate-800 dark:text-slate-200'}`}>
-                      {habit.title}
+                      {sanitize(habit.title)}
                     </h4>
                     <span className={`text-xs font-bold mt-1 ${habit.frequency === 'daily' ? 'text-orange-500 dark:text-orange-400' : 'text-slate-400 dark:text-slate-500'}`}>
                       {getFrequencyLabel(habit.frequency)}
