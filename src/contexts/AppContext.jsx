@@ -125,6 +125,7 @@ export function AppProvider({ children }) {
   const initialFetchDone = useRef(false);
   const initialFetchCompletedRef = useRef(false); // İlk fetch bitene kadar schedulePush çalışmasın
   const pendingPushRef = useRef(false); // Yerel değişiklik push edilene kadar sunucu verisiyle overwrite etme
+  const skipNextApplyRef = useRef(false); // Push tamamlandı - bir sonraki poll eski veri dönebilir, apply atla
 
   // Sunucudan gelen veriyi state'e uygula (tekrar kullanım için)
   const applyServerData = useCallback((data) => {
@@ -235,8 +236,13 @@ export function AppProvider({ children }) {
       }
       pendingPushRef.current = true;
       pushSync(getSyncPayload())
-        .then(() => { pendingPushRef.current = false; })
-        .catch(() => { pendingPushRef.current = false; });
+        .then(() => {
+          pendingPushRef.current = false;
+          skipNextApplyRef.current = true;
+        })
+        .catch(() => {
+          pendingPushRef.current = false;
+        });
     };
     const onVisibilityChange = () => {
       if (document.visibilityState === 'hidden') onHide();
@@ -259,6 +265,10 @@ export function AppProvider({ children }) {
       fetchSync()
         .then((data) => {
           if (pendingPushRef.current) return; // Yerel değişiklik henüz push edilmedi - overwrite etme!
+          if (skipNextApplyRef.current) {
+            skipNextApplyRef.current = false;
+            return; // Push tamamlandı ama bu fetch push'tan önce başlamış - eski veri, apply atla
+          }
           const serverHadData = (data.habits?.length || data.tasks?.length || data.lessons?.length || data.lessonTemplates?.length || data.students?.length || data.expenses?.length || Object.keys(data.waterLogs || {}).length || Object.keys(data.coffeeLogs || {}).length || data.workoutLogs?.length || data.recipes?.length || data.mealLogs?.length || data.goals?.length) > 0;
           if (serverHadData) {
             applyServerData(data);
@@ -293,6 +303,7 @@ export function AppProvider({ children }) {
       pushSync(getSyncPayload())
         .then(() => {
           pendingPushRef.current = false;
+          skipNextApplyRef.current = true; // Sonraki poll eski veri dönebilir - apply atla
           setSyncStatus('synced');
           setSyncError(null);
         })
