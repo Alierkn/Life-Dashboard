@@ -23,7 +23,7 @@ import {
   Users,
   Wallet,
 } from 'lucide-react';
-import { getTodayString, getMondayOfWeek } from '../../utils/date';
+import { getTodayString, getMondayOfWeek, toDateKey } from '../../utils/date';
 import { getMonthCalendar, DAY_NAMES, MONTH_NAMES } from '../../utils/date';
 import { parseCSV, parseExcel, rowsToLessons } from '../../utils/weeklyPlanParser';
 import { useExchangeRate } from '../../hooks/useExchangeRate';
@@ -222,18 +222,18 @@ export default function LessonsLayout({
 
   const safeLessons = lessons.map(ensureLessonFields);
   const sortedLessons = [...safeLessons].sort((a, b) => {
-    const dateCompare = a.date.localeCompare(b.date);
+    const dateCompare = toDateKey(a.date).localeCompare(toDateKey(b.date));
     return dateCompare !== 0 ? dateCompare : (a.time || '').localeCompare(b.time || '');
   });
 
   const today = getTodayString();
-  const upcomingLessons = sortedLessons.filter((l) => !l.cancelled && l.date >= today);
-  const pastLessons = sortedLessons.filter((l) => l.date < today);
+  const upcomingLessons = sortedLessons.filter((l) => !l.cancelled && toDateKey(l.date) >= today);
+  const pastLessons = sortedLessons.filter((l) => toDateKey(l.date) < today);
 
   const monthlyEarnings = safeLessons
     .filter((l) => !l.cancelled && l.fee)
     .reduce((acc, l) => {
-      const [y, m] = l.date.split('-').slice(0, 2);
+      const [y, m] = toDateKey(l.date).split('-').slice(0, 2);
       const key = `${y}-${m}`;
       acc[key] = (acc[key] || 0) + parseInt(String(l.fee).replace(/\D/g, ''), 10);
       return acc;
@@ -641,7 +641,7 @@ function LessonsCalendar({
   };
 
   const getLessonsForDate = (dateStr) =>
-    lessons.filter((l) => l.date === dateStr && !l.cancelled);
+    lessons.filter((l) => toDateKey(l.date) === dateStr && !l.cancelled);
 
   const [selectedDay, setSelectedDay] = useState(null);
   const dayLessons = selectedDay ? getLessonsForDate(selectedDay) : [];
@@ -784,7 +784,7 @@ function LessonCard({
           <div className="flex items-center gap-4 mt-2 text-xs text-slate-500 dark:text-slate-400">
             <span className="flex items-center gap-1">
               <Calendar className="w-3.5 h-3.5" />
-              {lesson.date}
+              {toDateKey(lesson.date)}
             </span>
             <span className="flex items-center gap-1">
               <Clock className="w-3.5 h-3.5" />
@@ -828,7 +828,7 @@ function LessonCard({
             </div>
           )}
 
-          {(isPast || lesson.date <= getTodayString() || safe.postLessonNotes) && (
+          {(isPast || toDateKey(lesson.date) <= getTodayString() || safe.postLessonNotes) && (
             <div className="mt-3">
               <button
                 onClick={() => setShowNotes(!showNotes)}

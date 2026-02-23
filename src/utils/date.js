@@ -24,6 +24,13 @@ export const getDaysBetween = (startStr, endStr) => {
 
 export const getTodayString = () => new Date().toISOString().split('T')[0];
 
+/** ISO ("2026-02-23T00:00:00.000Z") veya kısa ("2026-02-23") formatı YYYY-MM-DD'e çevirir */
+export const toDateKey = (d) => {
+  if (d == null) return '';
+  const s = String(d).trim();
+  return s.includes('T') ? s.split('T')[0] : s;
+};
+
 /** Verilen tarihin haftasının Pazartesi gününü döner (YYYY-MM-DD) */
 export const getMondayOfWeek = (dateStr) => {
   const d = new Date(dateStr);

@@ -2,6 +2,13 @@ import { sql } from './db.js';
 import { getDeviceId } from './lib/device.js';
 import { getOrCreateUser, updateUser } from './lib/user.js';
 
+/** ISO veya kısa tarihi YYYY-MM-DD'e çevirir */
+const toDateKey = (d) => {
+  if (d == null) return '';
+  const s = String(d).trim();
+  return s.includes('T') ? s.split('T')[0] : s;
+};
+
 /** Geçerli UUID string mi kontrol et - client ID'sini korumak için */
 const isValidUuid = (v) => {
   if (v == null) return false;
@@ -103,18 +110,19 @@ export default async function handler(req, res) {
       const taskLogs = [];
       taskLogsRows.forEach((r) => {
         const count = Number(r.count) || 1;
-        for (let i = 0; i < count; i++) taskLogs.push(r.date);
+        const key = toDateKey(r.date);
+        for (let i = 0; i < count; i++) taskLogs.push(key);
       });
 
       const waterLogs = {};
-      waterRows.forEach((r) => { waterLogs[r.date] = Number(r.count) || 0; });
+      waterRows.forEach((r) => { waterLogs[toDateKey(r.date)] = Number(r.count) || 0; });
 
       const coffeeLogs = {};
-      coffeeRows.forEach((r) => { coffeeLogs[r.date] = Number(r.count) || 0; });
+      coffeeRows.forEach((r) => { coffeeLogs[toDateKey(r.date)] = Number(r.count) || 0; });
 
       const lessons = lessonsRows.map((l) => ({
         id: l.id,
-        date: l.date,
+        date: toDateKey(l.date),
         studentName: l.student_name,
         subject: l.subject,
         time: l.time,
@@ -151,7 +159,7 @@ export default async function handler(req, res) {
 
       const expenses = expensesRows.map((e) => ({
         id: e.id,
-        date: e.date,
+        date: toDateKey(e.date),
         category: e.category,
         amount: e.amount,
         description: e.description || '',
@@ -159,7 +167,7 @@ export default async function handler(req, res) {
 
       const workoutLogs = workoutRows.map((w) => ({
         id: w.id,
-        date: w.date,
+        date: toDateKey(w.date),
         type: w.type,
         duration: w.duration,
         notes: w.notes || '',
@@ -178,7 +186,7 @@ export default async function handler(req, res) {
 
       const mealLogs = mealRows.map((m) => ({
         id: m.id,
-        date: m.date,
+        date: toDateKey(m.date),
         mealType: m.meal_type,
         description: m.description,
         recipeId: m.recipe_id,

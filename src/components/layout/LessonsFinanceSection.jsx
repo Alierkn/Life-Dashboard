@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Plus, Trash2, TrendingUp, TrendingDown, FileSpreadsheet, FileText } from 'lucide-react';
 import { generateId } from '../../constants';
 import * as XLSX from 'xlsx';
-import { MONTH_NAMES } from '../../utils/date';
+import { MONTH_NAMES, getTodayString, toDateKey } from '../../utils/date';
 import { useExchangeRate } from '../../hooks/useExchangeRate';
 
 const EXPENSE_CATEGORIES = ['Malzeme', 'Ulaşım', 'Kira', 'Diğer'];
@@ -18,17 +18,18 @@ export default function LessonsFinanceSection({ lessons, expenses, setExpenses, 
 
   const { rate: tryToEurRate } = useExchangeRate();
 
+  const today = getTodayString();
   const income = lessons
-    .filter((l) => !l.cancelled && l.fee)
+    .filter((l) => !l.cancelled && l.fee && toDateKey(l.date) <= today)
     .reduce((acc, l) => {
-      const [y, m] = l.date.split('-').slice(0, 2);
+      const [y, m] = toDateKey(l.date).split('-').slice(0, 2);
       const key = `${y}-${m}`;
       acc[key] = (acc[key] || 0) + parseInt(String(l.fee).replace(/\D/g, ''), 10);
       return acc;
     }, {});
 
   const expenseByMonth = expenses.reduce((acc, e) => {
-    const [y, m] = e.date.split('-').slice(0, 2);
+    const [y, m] = toDateKey(e.date).split('-').slice(0, 2);
     const key = `${y}-${m}`;
     acc[key] = (acc[key] || 0) + (e.amount || 0);
     return acc;
@@ -276,10 +277,10 @@ export default function LessonsFinanceSection({ lessons, expenses, setExpenses, 
         <div className="space-y-2">
           {expenses
             .filter((e) => {
-              const [y, m] = e.date.split('-').slice(0, 2);
+              const [y, m] = toDateKey(e.date).split('-').slice(0, 2);
               return `${y}-${m}` === currentMonthKey;
             })
-            .sort((a, b) => b.date.localeCompare(a.date))
+            .sort((a, b) => toDateKey(b.date).localeCompare(toDateKey(a.date)))
             .map((e) => (
               <div
                 key={e.id}
@@ -288,7 +289,7 @@ export default function LessonsFinanceSection({ lessons, expenses, setExpenses, 
                 <div>
                   <span className="font-bold">{e.category}</span>
                   {e.description && <span className="text-slate-500 text-sm ml-2">— {e.description}</span>}
-                  <span className="text-slate-400 text-xs ml-2">{e.date}</span>
+                  <span className="text-slate-400 text-xs ml-2">{toDateKey(e.date)}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="font-bold text-red-600">-{e.amount?.toLocaleString('tr-TR')} ₺</span>
