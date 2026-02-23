@@ -174,41 +174,42 @@ export function AppProvider({ children }) {
     mealLogs,
   }), [userName, theme, userStats, leftLayout, rightLayout, habits, tasks, taskLogs, goals, lessons, lessonTemplates, students, expenses, waterLogs, coffeeLogs, workoutLogs, recipes, mealLogs]);
 
+  const getSyncPayloadRef = useRef(getSyncPayload);
+  getSyncPayloadRef.current = getSyncPayload;
+
   // Fetch from Neon on mount
   useEffect(() => {
     if (initialFetchDone.current) return;
     initialFetchDone.current = true;
     setSyncStatus('loading');
-    const initialPayload = {
-      userName: stored.userName,
-      theme: stored.theme,
-      userStats: { xp: stored.userStats.xp, level: stored.userStats.level },
-      leftLayout: stored.leftLayout,
-      rightLayout: stored.rightLayout,
-      habits: stored.habits,
-      tasks: stored.tasks,
-      taskLogs: stored.taskLogs,
-      goals: stored.goals,
-      lessons: stored.lessons,
-      lessonTemplates: stored.lessonTemplates,
-      students: stored.students,
-      expenses: stored.expenses,
-      waterLogs: stored.waterLogs,
-      coffeeLogs: stored.coffeeLogs,
-      workoutLogs: stored.workoutLogs,
-      recipes: stored.recipes,
-      mealLogs: stored.mealLogs,
-    };
     fetchSync()
       .then((data) => {
         const serverHadData = (data.habits?.length || data.tasks?.length || data.lessons?.length || data.lessonTemplates?.length || data.students?.length || data.expenses?.length || Object.keys(data.waterLogs || {}).length || Object.keys(data.coffeeLogs || {}).length || data.workoutLogs?.length || data.recipes?.length || data.mealLogs?.length || data.goals?.length) > 0;
-        const hasLocalData = (initialPayload.habits?.length || initialPayload.tasks?.length || initialPayload.lessons?.length || initialPayload.lessonTemplates?.length || initialPayload.students?.length || initialPayload.expenses?.length || Object.keys(initialPayload.waterLogs || {}).length || Object.keys(initialPayload.coffeeLogs || {}).length || initialPayload.workoutLogs?.length || initialPayload.recipes?.length || initialPayload.mealLogs?.length || initialPayload.goals?.length) > 0;
+        const payload = getSyncPayloadRef.current();
+        const hasLocalData = (payload.habits?.length || payload.tasks?.length || payload.lessons?.length || payload.lessonTemplates?.length || payload.students?.length || payload.expenses?.length || Object.keys(payload.waterLogs || {}).length || Object.keys(payload.coffeeLogs || {}).length || payload.workoutLogs?.length || payload.recipes?.length || payload.mealLogs?.length || payload.goals?.length) > 0;
 
-        if (serverHadData) {
+        if (pendingPushRef.current) {
+          // Kullanıcı veri ekledi, push bekliyor - sunucu verisiyle overwrite etme
+          setSyncStatus('synced');
+          setSyncError(null);
+          initialFetchCompletedRef.current = true;
+          return;
+        }
+        if (hasLocalData) {
+          // Yerel veri var (ilk yüklemeden sonra eklenen dahil) - güncel state ile push et, overwrite etme
+          pendingPushRef.current = true;
+          pushSync(payload)
+            .then(() => {
+              pendingPushRef.current = false;
+              skipNextApplyRef.current = true;
+            })
+            .catch((e) => {
+              pendingPushRef.current = false;
+              setSyncStatus('error');
+              setSyncError(e.message);
+            });
+        } else if (serverHadData) {
           applyServerData(data);
-        } else if (hasLocalData) {
-          // Sunucu boş, yerel veri var - üzerine yazma, sadece push et (veri kaybı önleme)
-          pushSync(initialPayload).then(() => {}).catch((e) => { setSyncStatus('error'); setSyncError(e.message); });
         } else {
           applyServerData(data);
         }
@@ -219,13 +220,21 @@ export function AppProvider({ children }) {
       .catch((err) => {
         setSyncStatus('error');
         setSyncError(err.message);
-        const hasLocalData = initialPayload.habits?.length || initialPayload.tasks?.length || initialPayload.lessons?.length || initialPayload.lessonTemplates?.length || initialPayload.students?.length || initialPayload.expenses?.length;
+        const payload = getSyncPayloadRef.current();
+        const hasLocalData = payload.habits?.length || payload.tasks?.length || payload.lessons?.length || payload.lessonTemplates?.length || payload.students?.length || payload.expenses?.length;
         if (hasLocalData) {
-          pushSync(initialPayload).then(() => { setSyncStatus('synced'); setSyncError(null); }).catch(() => {});
+          pendingPushRef.current = true;
+          pushSync(payload)
+            .then(() => {
+              pendingPushRef.current = false;
+              setSyncStatus('synced');
+              setSyncError(null);
+            })
+            .catch(() => { pendingPushRef.current = false; });
         }
         initialFetchCompletedRef.current = true;
       });
-  }, []);
+  }, [applyServerData]);
 
   // Sekme kapanırken/arka plana giderken hemen push (veri kaybını önle)
   useEffect(() => {
