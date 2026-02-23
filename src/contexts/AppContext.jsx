@@ -344,3 +344,110 @@ export function AppProvider({ children }) {
       useEffect(() => { localStorage.setItem(STORAGE_KEYS.MEAL_LOGS, JSON.stringify(mealLogs)); }, [mealLogs]);
       useEffect(() => { localStorage.setItem(STORAGE_KEYS.LAYOUT_LEFT, JSON.stringify(leftLayout)); }, [leftLayout]);
       useEffect(() => { localStorage.setItem(STORAGE_KEYS.LAYOUT_RIGHT, JSON.stringify(rightLayout)); }, [rightLayout]);
+
+  // Dark mode
+  useEffect(() => {
+    if (theme === 'dark') document.documentElement.classList.add('dark');
+    else document.documentElement.classList.remove('dark');
+  }, [theme]);
+
+  // Notification auto-dismiss
+  useEffect(() => {
+    if (!notification) return;
+    const timer = setTimeout(() => setNotification(null), NOTIFICATION_AUTO_DISMISS_MS);
+    return () => clearTimeout(timer);
+  }, [notification]);
+
+  const addXp = useCallback((amount) => {
+    setUserStats((prev) => ({
+      ...prev,
+      xp: Math.max(0, prev.xp + amount),
+      level: Math.floor(Math.max(0, prev.xp + amount) / XP_PER_LEVEL) + 1,
+    }));
+  }, []);
+
+  const showNotification = useCallback((msg) => setNotification(msg), []);
+
+  const setDeviceId = useCallback((newId) => {
+    if (newId?.trim()) {
+      localStorage.setItem('life_dashboard_device_id', newId.trim());
+      window.location.reload();
+    }
+  }, []);
+
+  const refetchFromServer = useCallback(() => {
+    setSyncStatus('loading');
+    fetchSync()
+      .then((data) => {
+        if (pendingPushRef.current) {
+          setSyncStatus('synced');
+          return;
+        }
+        applyServerData(data);
+        setSyncStatus('synced');
+        setSyncError(null);
+      })
+      .catch((err) => {
+        setSyncStatus('error');
+        setSyncError(err.message);
+      });
+  }, [applyServerData]);
+
+  const value = {
+    theme,
+    setTheme,
+    habits,
+    setHabits,
+    tasks,
+    setTasks,
+    taskLogs,
+    setTaskLogs,
+    goals,
+    setGoals,
+    userStats,
+    setUserStats,
+    userName,
+    setUserName,
+    lessons,
+    setLessons,
+    lessonTemplates,
+    setLessonTemplates,
+    students,
+    setStudents,
+    expenses,
+    setExpenses,
+    waterLogs,
+    setWaterLogs,
+    coffeeLogs,
+    setCoffeeLogs,
+    workoutLogs,
+    setWorkoutLogs,
+    recipes,
+    setRecipes,
+    mealLogs,
+    setMealLogs,
+    leftLayout,
+    setLeftLayout,
+    rightLayout,
+    setRightLayout,
+    notification,
+    setNotification,
+    showNotification,
+    isImporting,
+    setIsImporting,
+    addXp,
+    syncStatus,
+    syncError,
+    deviceId: getDeviceId(),
+    setDeviceId,
+    refetchFromServer,
+  };
+
+  return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
+}
+
+export function useApp() {
+  const ctx = useContext(AppContext);
+  if (!ctx) throw new Error('useApp must be used within AppProvider');
+  return ctx;
+}
