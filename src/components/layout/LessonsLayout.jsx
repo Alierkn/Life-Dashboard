@@ -34,6 +34,7 @@ import LessonsFinanceSection from './LessonsFinanceSection';
 
 const ensureLessonFields = (lesson) => ({
   ...lesson,
+  duration: lesson.duration ?? 60,
   paymentDone: lesson.paymentDone ?? false,
   parentInformed: lesson.parentInformed ?? false,
   cancelled: lesson.cancelled ?? false,
@@ -95,7 +96,7 @@ export default function LessonsLayout({
     e.preventDefault();
     if (!formData.studentName.trim() || !formData.subject.trim()) return;
 
-    const existing = editingId ? lessons.find((l) => l.id === editingId) : null;
+    const existing = editingId ? lessons.find((l) => String(l.id) === String(editingId)) : null;
     const lesson = ensureLessonFields({
       id: editingId ?? generateId(),
       studentName: formData.studentName.trim(),
@@ -114,7 +115,7 @@ export default function LessonsLayout({
     });
 
     if (editingId) {
-      setLessons((prev) => prev.map((l) => (l.id === editingId ? lesson : l)));
+      setLessons((prev) => prev.map((l) => (String(l.id) === String(editingId) ? lesson : l)));
     } else {
       setLessons((prev) => [...prev, lesson]);
     }
@@ -126,7 +127,7 @@ export default function LessonsLayout({
     setFormData({
       studentName: safe.studentName,
       subject: safe.subject,
-      date: safe.date,
+      date: toDateKey(safe.date),
       time: safe.time || '14:00',
       duration: safe.duration || 60,
       fee: safe.fee || '',
@@ -138,8 +139,8 @@ export default function LessonsLayout({
 
   const handleDelete = (id) => {
     if (window.confirm('Bu dersi silmek istediğine emin misin?')) {
-      setLessons((prev) => prev.filter((l) => l.id !== id));
-      if (editingId === id) resetForm();
+      setLessons((prev) => prev.filter((l) => String(l.id) !== String(id)));
+      if (String(editingId) === String(id)) resetForm();
     }
   };
 
@@ -155,7 +156,7 @@ export default function LessonsLayout({
 
   const updatePostLessonNotes = (id, notes) => {
     setLessons((prev) =>
-      prev.map((l) => (l.id === id ? { ...ensureLessonFields(l), postLessonNotes: notes } : l))
+      prev.map((l) => (String(l.id) === String(id) ? { ...ensureLessonFields(l), postLessonNotes: notes } : l))
     );
   };
 
@@ -231,7 +232,7 @@ export default function LessonsLayout({
   const pastLessons = sortedLessons.filter((l) => toDateKey(l.date) < today);
 
   const monthlyEarnings = safeLessons
-    .filter((l) => !l.cancelled && l.fee)
+    .filter((l) => !l.cancelled && l.fee && toDateKey(l.date) <= today)
     .reduce((acc, l) => {
       const [y, m] = toDateKey(l.date).split('-').slice(0, 2);
       const key = `${y}-${m}`;
@@ -643,7 +644,7 @@ function LessonsCalendar({
   const getLessonsForDate = (dateStr) =>
     lessons.filter((l) => toDateKey(l.date) === dateStr && !l.cancelled);
 
-  const [selectedDay, setSelectedDay] = useState(null);
+  const [selectedDay, setSelectedDay] = useState(today);
   const dayLessons = selectedDay ? getLessonsForDate(selectedDay) : [];
 
   return (
@@ -747,6 +748,7 @@ function LessonCard({
 }) {
   const [showNotes, setShowNotes] = useState(false);
   const safe = {
+    duration: lesson.duration ?? 60,
     paymentDone: lesson.paymentDone ?? false,
     parentInformed: lesson.parentInformed ?? false,
     cancelled: lesson.cancelled ?? false,
@@ -788,7 +790,7 @@ function LessonCard({
             </span>
             <span className="flex items-center gap-1">
               <Clock className="w-3.5 h-3.5" />
-              {lesson.time} — {lesson.duration} dk
+              {lesson.time} — {(lesson.duration ?? 60)} dk
             </span>
             {lesson.fee && (
               <span className="font-bold text-amber-600 dark:text-amber-400">{lesson.fee} ₺</span>

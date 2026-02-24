@@ -81,7 +81,7 @@ export default function LessonsFinanceSection({ lessons, expenses, setExpenses, 
   const exportExcel = () => {
     const studentSummary = {};
     lessons
-      .filter((l) => !l.cancelled && l.fee)
+      .filter((l) => !l.cancelled && l.fee && toDateKey(l.date) <= today)
       .forEach((l) => {
         const name = l.studentName;
         if (!studentSummary[name]) studentSummary[name] = { ders: 0, tutar: 0 };
@@ -114,7 +114,7 @@ export default function LessonsFinanceSection({ lessons, expenses, setExpenses, 
   const exportPrint = () => {
     const studentSummary = {};
     lessons
-      .filter((l) => !l.cancelled && l.fee)
+      .filter((l) => !l.cancelled && l.fee && toDateKey(l.date) <= today)
       .forEach((l) => {
         const name = l.studentName;
         if (!studentSummary[name]) studentSummary[name] = { ders: 0, tutar: 0 };

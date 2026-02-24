@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { BarChart3, FileText, CheckCircle2, ListTodo, Flame, Target } from 'lucide-react';
-import { getTodayString, getPastDays } from '../../utils/date';
+import { getTodayString, getPastDays, toDateKey } from '../../utils/date';
 import { TASK_TAGS } from '../../constants';
 
 const TAG_COLORS = {
@@ -26,7 +26,7 @@ export default function StatsWidget({
   const tasksCompletedToday = taskLogs.filter((d) => d === todayStr).length;
 
   const thisMonthKey = todayStr.slice(0, 7);
-  const lessonsThisMonth = lessons.filter((l) => !l.cancelled && l.date?.startsWith(thisMonthKey)).length;
+  const lessonsThisMonth = lessons.filter((l) => !l.cancelled && toDateKey(l.date).startsWith(thisMonthKey)).length;
 
   const tagDistribution = TASK_TAGS.reduce((acc, tag) => {
     acc[tag] = tasks.filter((t) => (t.tag || 'Genel') === tag).length;

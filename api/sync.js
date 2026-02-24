@@ -287,12 +287,13 @@ export default async function handler(req, res) {
       if (Array.isArray(body.lessons)) {
         for (const l of body.lessons) {
           const feeVal = l.fee ? parseInt(String(l.fee).replace(/\D/g, ''), 10) : null;
+          const dateVal = toDateKey(l.date);
           if (isValidUuid(l.id)) {
             await sql`INSERT INTO lessons (id, user_id, date, student_name, subject, time, duration, fee, notes, cancelled, payment_done, parent_informed, student_attended, post_lesson_notes)
-              VALUES (${l.id}, ${userId}, ${l.date}, ${l.studentName}, ${l.subject}, ${l.time || '14:00'}, ${l.duration || 60}, ${feeVal}, ${l.notes || ''}, ${!!l.cancelled}, ${!!l.paymentDone}, ${!!l.parentInformed}, ${!!l.studentAttended}, ${l.postLessonNotes || ''})`;
+              VALUES (${l.id}, ${userId}, ${dateVal}, ${l.studentName}, ${l.subject}, ${l.time || '14:00'}, ${l.duration || 60}, ${feeVal}, ${l.notes || ''}, ${!!l.cancelled}, ${!!l.paymentDone}, ${!!l.parentInformed}, ${!!l.studentAttended}, ${l.postLessonNotes || ''})`;
           } else {
             await sql`INSERT INTO lessons (user_id, date, student_name, subject, time, duration, fee, notes, cancelled, payment_done, parent_informed, student_attended, post_lesson_notes)
-              VALUES (${userId}, ${l.date}, ${l.studentName}, ${l.subject}, ${l.time || '14:00'}, ${l.duration || 60}, ${feeVal}, ${l.notes || ''}, ${!!l.cancelled}, ${!!l.paymentDone}, ${!!l.parentInformed}, ${!!l.studentAttended}, ${l.postLessonNotes || ''})`;
+              VALUES (${userId}, ${dateVal}, ${l.studentName}, ${l.subject}, ${l.time || '14:00'}, ${l.duration || 60}, ${feeVal}, ${l.notes || ''}, ${!!l.cancelled}, ${!!l.paymentDone}, ${!!l.parentInformed}, ${!!l.studentAttended}, ${l.postLessonNotes || ''})`;
           }
         }
       }
@@ -327,12 +328,13 @@ export default async function handler(req, res) {
       await sql`DELETE FROM expenses WHERE user_id = ${userId}`;
       if (Array.isArray(body.expenses)) {
         for (const e of body.expenses) {
+          const expDateVal = toDateKey(e.date);
           if (isValidUuid(e.id)) {
             await sql`INSERT INTO expenses (id, user_id, date, category, amount, description)
-              VALUES (${e.id}, ${userId}, ${e.date}, ${e.category}, ${e.amount}, ${e.description || ''})`;
+              VALUES (${e.id}, ${userId}, ${expDateVal}, ${e.category}, ${e.amount}, ${e.description || ''})`;
           } else {
             await sql`INSERT INTO expenses (user_id, date, category, amount, description)
-              VALUES (${userId}, ${e.date}, ${e.category}, ${e.amount}, ${e.description || ''})`;
+              VALUES (${userId}, ${expDateVal}, ${e.category}, ${e.amount}, ${e.description || ''})`;
           }
         }
       }
