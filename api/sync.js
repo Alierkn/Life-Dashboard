@@ -253,6 +253,7 @@ export default async function handler(req, res) {
           if (!isValidUuid(h.id)) continue;
           incomingHabitIds.add(h.id);
           const d = toDbHabit(h, userId);
+          // SECURITY FIX: Ensure WHERE clause in UPDATE prevents modifying other users' data
           await sql`
             INSERT INTO habits (id, user_id, title, frequency, streak, target_period, completed_dates)
             VALUES (${d.id}, ${userId}, ${d.title}, ${d.frequency}, ${d.streak}, ${d.target_period}, ${d.completed_dates}::jsonb)
@@ -262,6 +263,7 @@ export default async function handler(req, res) {
               streak = EXCLUDED.streak,
               target_period = EXCLUDED.target_period,
               completed_dates = EXCLUDED.completed_dates
+            WHERE habits.user_id = ${userId}
           `;
         }
       }
@@ -293,6 +295,7 @@ export default async function handler(req, res) {
               priority = EXCLUDED.priority,
               repeat = EXCLUDED.repeat,
               subtasks = EXCLUDED.subtasks
+            WHERE tasks.user_id = ${userId}
           `;
         }
       }
@@ -320,6 +323,7 @@ export default async function handler(req, res) {
               current = EXCLUDED.current,
               target = EXCLUDED.target,
               unit = EXCLUDED.unit
+            WHERE goals.user_id = ${userId}
           `;
         }
       }
@@ -371,6 +375,7 @@ export default async function handler(req, res) {
               parent_informed = EXCLUDED.parent_informed,
               student_attended = EXCLUDED.student_attended,
               post_lesson_notes = EXCLUDED.post_lesson_notes
+            WHERE lessons.user_id = ${userId}
           `;
         }
       }
@@ -401,6 +406,7 @@ export default async function handler(req, res) {
               duration = EXCLUDED.duration,
               fee = EXCLUDED.fee,
               notes = EXCLUDED.notes
+            WHERE lesson_templates.user_id = ${userId}
           `;
         }
       }
@@ -430,6 +436,7 @@ export default async function handler(req, res) {
               parent_name = EXCLUDED.parent_name,
               parent_phone = EXCLUDED.parent_phone,
               notes = EXCLUDED.notes
+            WHERE students.user_id = ${userId}
           `;
         }
       }
@@ -457,6 +464,7 @@ export default async function handler(req, res) {
               category = EXCLUDED.category,
               amount = EXCLUDED.amount,
               description = EXCLUDED.description
+            WHERE expenses.user_id = ${userId}
           `;
         }
       }
@@ -503,6 +511,7 @@ export default async function handler(req, res) {
               type = EXCLUDED.type,
               duration = EXCLUDED.duration,
               notes = EXCLUDED.notes
+            WHERE workout_logs.user_id = ${userId}
           `;
         }
       }
@@ -532,6 +541,7 @@ export default async function handler(req, res) {
               cook_time = EXCLUDED.cook_time,
               servings = EXCLUDED.servings,
               category = EXCLUDED.category
+            WHERE recipes.user_id = ${userId}
            `;
         }
       }
@@ -559,6 +569,7 @@ export default async function handler(req, res) {
               meal_type = EXCLUDED.meal_type,
               description = EXCLUDED.description,
               recipe_id = EXCLUDED.recipe_id
+            WHERE meal_logs.user_id = ${userId}
           `;
         }
       }

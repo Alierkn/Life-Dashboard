@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, useCallback, Suspense, lazy } from 'react';
 import { AppProvider, useApp } from './contexts/AppContext';
 import { getTodayString, getPastDays, getCurrentWeekDates } from './utils/date';
