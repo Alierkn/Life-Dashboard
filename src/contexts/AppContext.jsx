@@ -177,7 +177,12 @@ export function AppProvider({ children }) {
   }), [userName, theme, userStats, leftLayout, rightLayout, habits, tasks, taskLogs, goals, lessons, lessonTemplates, students, expenses, waterLogs, coffeeLogs, workoutLogs, recipes, mealLogs]);
 
   const getSyncPayloadRef = useRef(getSyncPayload);
-  getSyncPayloadRef.current = getSyncPayload;
+
+  // FIX: Ref assignment inside effect instead of render
+  useEffect(() => {
+    getSyncPayloadRef.current = getSyncPayload;
+  }, [getSyncPayload]);
+
 
   // Fetch from Neon on mount
   useEffect(() => {

@@ -479,6 +479,7 @@ function AppContent() {
       reader.readAsText(file);
     },
     [
+      setIsImporting, // Added missing dependency
       setHabits,
       setTasks,
       setTaskLogs,
@@ -509,8 +510,6 @@ function AppContent() {
     if (v !== undefined) setIsEditLayoutMode(v);
     else setIsEditLayoutMode((prev) => !prev);
   }, []);
-
-  const handleSetEditLayout = useCallback((v) => setIsEditLayoutMode(v), []);
 
   const widgetMap = {
     welcome: (
